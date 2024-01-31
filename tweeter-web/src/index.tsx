@@ -6,6 +6,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import UserInfoProvider from "./components/userInfo/UserInfoProvider";
 import ToastProvider from "./components/toaster/ToastProvider";
+import UserNavigationProvider from "./components/userInfo/UserNavigationProvider";
 
 library.add(fab);
 
@@ -16,7 +17,9 @@ root.render(
   <React.StrictMode>
     <UserInfoProvider>
       <ToastProvider>
-        <App />
+        <UserNavigationProvider>
+          <App />
+        </UserNavigationProvider>
       </ToastProvider>
     </UserInfoProvider>
   </React.StrictMode>

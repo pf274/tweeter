@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
-import { AuthToken, FakeData, Status, User } from "tweeter-shared";
+import { Status } from "tweeter-shared";
 import Post from "./Post";
-import useToastListener from "../toaster/ToastListenerHook";
-import { useContext } from "react";
-import { UserInfoContext } from "../userInfo/UserInfoProvider";
+import useUserNavigation from "../userInfo/UserNavigationHook";
 
 
 interface Props {
@@ -12,38 +10,7 @@ interface Props {
 
 
 function StatusItem({status}: Props) {
-  const { displayErrorMessage } = useToastListener();
-  const { setDisplayedUser, currentUser, authToken } = useContext(UserInfoContext);
-
-  async function getUser(authToken: AuthToken, alias: string): Promise<User | null> {
-      // TODO: Replace with the result of calling server
-      return FakeData.instance.findUserByAlias(alias);
-  }
-
-  function extractAlias(value: string): string {
-    const index = value.indexOf("@");
-    return value.substring(index);
-  }
-
-  async function navigateToUser(event: React.MouseEvent): Promise<void> {
-    event.preventDefault();
-
-    try {
-      let alias = extractAlias(event.target.toString());
-
-      let user = await getUser(authToken!, alias);
-
-      if (Boolean(user)) {
-        if (currentUser!.equals(user!)) {
-          setDisplayedUser(currentUser!);
-        } else {
-          setDisplayedUser(user!);
-        }
-      }
-    } catch (error) {
-      displayErrorMessage(`Failed to get user because of exception: ${error}`);
-    }
-  }
+  const { navigateToUser } = useUserNavigation();
 
   return (
       <div
