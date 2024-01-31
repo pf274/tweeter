@@ -3,40 +3,47 @@ import { UserInfoContext } from "../userInfo/UserInfoProvider";
 import { AuthToken, FakeData, Status, User } from "tweeter-shared";
 import { useState, useRef, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Link } from "react-router-dom";
-import Post from "../statusItem/Post";
 import useToastListener from "../toaster/ToastListenerHook";
 import StatusItem from "../statusItem/StatusItem";
 
 export const PAGE_SIZE = 10;
 
-const StoryScroller = () => {
+interface Props {
+  loadItems: (
+    authToken: AuthToken,
+    user: User,
+    pageSize: number,
+    lastItem: Status | null
+  ) => Promise<[Status[], boolean]>;
+}
+
+function StatusItemScroller(props: Props) {
   const { displayErrorMessage } = useToastListener();
-  const [items, setItems] = useState<Status[]>([]);
+  const [statusItems, setStatusItems] = useState<Status[]>([]);
   const [hasMoreItems, setHasMoreItems] = useState(true);
   const [lastItem, setLastItem] = useState<Status | null>(null);
 
   // Required to allow the addItems method to see the current value of 'items'
   // instead of the value from when the closure was created.
-  const itemsReference = useRef(items);
-  itemsReference.current = items;
+  const statusItemsReference = useRef(statusItems);
+  statusItemsReference.current = statusItems;
 
-  const addItems = (newItems: Status[]) =>
-    setItems([...itemsReference.current, ...newItems]);
+  const addItems = (newStatusItems: Status[]) =>
+    setStatusItems([...statusItemsReference.current, ...newStatusItems]);
 
-  const { displayedUser, setDisplayedUser, currentUser, authToken } =
+  const { displayedUser, authToken } =
     useContext(UserInfoContext);
 
-  // Load initial items
+  // Load initial status items
   useEffect(() => {
-    loadMoreItems();
+    loadMoreStatusItems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function loadMoreItems() {
+  async function loadMoreStatusItems() {
     try {
       if (hasMoreItems) {
-        let [newItems, hasMore] = await loadMoreStoryItems(
+        let [newItems, hasMore] = await props.loadItems(
           authToken!,
           displayedUser!,
           PAGE_SIZE,
@@ -48,30 +55,24 @@ const StoryScroller = () => {
         addItems(newItems);
       }
     } catch (error) {
-      displayErrorMessage(
-        `Failed to load story items because of exception: ${error}`
-      );
+      displayErrorMessage(`Failed to load feed items because of exception: ${error}`);
     }
-  }
-
-  async function loadMoreStoryItems(authToken: AuthToken, user: User, pageSize: number, lastItem: Status | null): Promise<[Status[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
   }
 
   return (
     <div className="container px-0 overflow-visible vh-100">
       <InfiniteScroll
         className="pr-0 mr-0"
-        dataLength={items.length}
-        next={loadMoreItems}
+        dataLength={statusItems.length}
+        next={loadMoreStatusItems}
         hasMore={hasMoreItems}
         loader={<h4>Loading...</h4>}
       >
-        {items.map((item, index) => <StatusItem status={item} key={index} />)}
+        {statusItems.map((item, index) => <StatusItem status={item} key={index} />)}
       </InfiniteScroll>
     </div>
   );
-};
+}
 
-export default StoryScroller;
+
+export default StatusItemScroller;
