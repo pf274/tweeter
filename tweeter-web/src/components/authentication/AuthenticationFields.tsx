@@ -3,10 +3,11 @@ import { SetStateAction } from "react";
 interface AuthenticationFieldProps {
   setAlias: React.Dispatch<SetStateAction<string>>,
   setPassword: React.Dispatch<SetStateAction<string>>
+  addBottomMargin: Boolean,
 }
 
 
-function AuthenticationFields({setAlias, setPassword}: AuthenticationFieldProps) {
+function AuthenticationFields({setAlias, setPassword, addBottomMargin}: AuthenticationFieldProps) {
   return (
     <div>
       <div className="form-floating">
@@ -21,7 +22,7 @@ function AuthenticationFields({setAlias, setPassword}: AuthenticationFieldProps)
       />
       <label htmlFor="aliasInput">Alias</label>
     </div>
-    <div className="form-floating">
+    <div className={`form-floating${addBottomMargin ? " mb-3" : ""}`}>
       <input
         type="password"
         className="form-control"

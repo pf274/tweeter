@@ -61,7 +61,7 @@ const Login = (props: Props) => {
   };
 
   const inputFieldGenerator = () => {
-    return <AuthenticationFields setAlias={setAlias} setPassword={setPassword} />
+    return <AuthenticationFields setAlias={setAlias} setPassword={setPassword} addBottomMargin={true} />
   };
 
   const switchAuthenticationMethodGenerator = () => {
