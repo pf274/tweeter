@@ -4,7 +4,7 @@ import { UserItemPresenter, UserItemView } from "./UserItemPresenter";
 
 export const PAGE_SIZE = 10;
 
-export class FollowingPresenter extends UserItemPresenter {
+export class FollowersPresenter extends UserItemPresenter {
   private service: FollowService;
   private lastItem: User | null = null;
 
@@ -16,7 +16,7 @@ export class FollowingPresenter extends UserItemPresenter {
   public async loadMoreItems(authToken: AuthToken, displayedUser: User) {
     try {
       if (this.hasMoreItems) {
-        let [newItems, hasMore] = await this.service.loadMoreFollowees(
+        let [newItems, hasMore] = await this.service.loadMoreFollowers(
           authToken,
           displayedUser,
           PAGE_SIZE,
@@ -29,7 +29,7 @@ export class FollowingPresenter extends UserItemPresenter {
       }
     } catch (error) {
       this.view.displayErrorMessage(
-        `Failed to load followee items because of exception: ${error}`
+        `Failed to load follower items because of exception: ${error}`
       );
     }
   }

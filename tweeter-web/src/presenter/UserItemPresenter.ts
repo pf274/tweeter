@@ -7,6 +7,7 @@ export interface UserItemView {
 
 export abstract class UserItemPresenter {
   private _view: UserItemView;
+  private _hasMoreItems: boolean = true;
 
   protected constructor(view: UserItemView) {
     this._view = view;
@@ -14,6 +15,14 @@ export abstract class UserItemPresenter {
 
   protected get view(): UserItemView {
     return this._view;
+  }
+
+  protected set hasMoreItems(value: boolean) {
+    this._hasMoreItems = value;
+  }
+
+  public get hasMoreItems(): boolean {
+    return this._hasMoreItems;
   }
 
   public abstract loadMoreItems(
