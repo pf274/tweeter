@@ -37,25 +37,6 @@ const App = () => {
 };
 
 const AuthenticatedRoutes = () => {
-  const loadMoreFollowers = async (
-    authToken: AuthToken,
-    user: User,
-    pageSize: number,
-    lastItem: User | null
-  ): Promise<[User[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, user);
-  };
-
-  const loadMoreFollowees = async (
-    authToken: AuthToken,
-    user: User,
-    pageSize: number,
-    lastItem: User | null
-  ): Promise<[User[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, user);
-  };
   const loadMoreFeedItems = async (
     authToken: AuthToken,
     user: User,

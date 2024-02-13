@@ -21,7 +21,6 @@ const AppNavbar = () => {
 
       clearLastInfoMessage();
       clearUserInfo();
-      navigate("/login");
     } catch (error) {
       displayErrorMessage(
         `Failed to log user out because of exception: ${error}`
