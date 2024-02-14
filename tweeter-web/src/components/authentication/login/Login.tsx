@@ -3,10 +3,13 @@ import "bootstrap/dist/css/bootstrap.css";
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
-import { AuthToken, FakeData, User } from "tweeter-shared";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationFields from "../AuthenticationFields";
 import useUserInfoHook from "../../userInfo/UserInfoHook";
+import {
+  LoginPresenter,
+  LoginView,
+} from "../../../presenter/authentication/LoginPresenter";
 
 interface Props {
   originalUrl?: string;
@@ -24,44 +27,35 @@ const Login = (props: Props) => {
   const rememberMeRef = useRef(rememberMe);
   rememberMeRef.current = rememberMe;
 
+  const listener: LoginView = {
+    updateUserInfo,
+    navigate,
+    displayErrorMessage,
+  };
+
+  const [presenter] = useState(new LoginPresenter(listener));
+
   const checkSubmitButtonStatus = (): boolean => {
-    return !alias || !password;
+    return presenter.checkStatus(alias, password);
   };
 
   const doLogin = async () => {
-    try {
-      let [user, authToken] = await login(alias, password);
-
-      updateUserInfo(user, user, authToken, rememberMeRef.current);
-
-      if (!!props.originalUrl) {
-        navigate(props.originalUrl);
-      } else {
-        navigate("/");
-      }
-    } catch (error) {
-      displayErrorMessage(
-        `Failed to log user in because of exception: ${error}`
-      );
-    }
-  };
-
-  const login = async (
-    alias: string,
-    password: string
-  ): Promise<[User, AuthToken]> => {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
-
-    if (user === null) {
-      throw new Error("Invalid alias or password");
-    }
-
-    return [user, FakeData.instance.authToken];
+    presenter.doLogin(
+      alias,
+      password,
+      props.originalUrl,
+      rememberMeRef.current
+    );
   };
 
   const inputFieldGenerator = () => {
-    return <AuthenticationFields setAlias={setAlias} setPassword={setPassword} addBottomMargin={true} />
+    return (
+      <AuthenticationFields
+        setAlias={setAlias}
+        setPassword={setPassword}
+        addBottomMargin={true}
+      />
+    );
   };
 
   const switchAuthenticationMethodGenerator = () => {

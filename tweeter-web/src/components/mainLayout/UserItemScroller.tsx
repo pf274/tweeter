@@ -6,7 +6,7 @@ import useUserInfoHook from "../userInfo/UserInfoHook";
 import {
   UserItemPresenter,
   UserItemView,
-} from "../../presenter/UserItemPresenter";
+} from "../../presenter/follow/UserItemPresenter";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 interface Props {

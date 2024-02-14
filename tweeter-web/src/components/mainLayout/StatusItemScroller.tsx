@@ -4,31 +4,33 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import useToastListener from "../toaster/ToastListenerHook";
 import StatusItem from "../statusItem/StatusItem";
 import useUserInfoHook from "../userInfo/UserInfoHook";
-
-export const PAGE_SIZE = 10;
+import { FEED_PAGE_SIZE } from "../../presenter/status/FeedPresenter";
+import {
+  StatusItemPresenter,
+  StatusItemView,
+} from "../../presenter/status/StatusPresenter";
 
 interface Props {
-  loadItems: (
-    authToken: AuthToken,
-    user: User,
-    pageSize: number,
-    lastItem: Status | null
-  ) => Promise<[Status[], boolean]>;
+  presenterGenerator: (view: StatusItemView) => StatusItemPresenter;
 }
 
 function StatusItemScroller(props: Props) {
   const { displayErrorMessage } = useToastListener();
   const [statusItems, setStatusItems] = useState<Status[]>([]);
-  const [hasMoreItems, setHasMoreItems] = useState(true);
-  const [lastItem, setLastItem] = useState<Status | null>(null);
+  const listener: StatusItemView = {
+    addItems(newItems: Status[]) {
+      setStatusItems([...statusItems, ...newItems]);
+    },
+    displayErrorMessage: displayErrorMessage,
+  };
+  const [presenter] = useState<StatusItemPresenter>(
+    props.presenterGenerator(listener)
+  );
 
   // Required to allow the addItems method to see the current value of 'items'
   // instead of the value from when the closure was created.
   const statusItemsReference = useRef(statusItems);
   statusItemsReference.current = statusItems;
-
-  const addItems = (newStatusItems: Status[]) =>
-    setStatusItems([...statusItemsReference.current, ...newStatusItems]);
 
   const { displayedUser, authToken } = useUserInfoHook();
 
@@ -39,22 +41,7 @@ function StatusItemScroller(props: Props) {
   }, []);
 
   async function loadMoreStatusItems() {
-    try {
-      if (hasMoreItems) {
-        let [newItems, hasMore] = await props.loadItems(
-          authToken!,
-          displayedUser!,
-          PAGE_SIZE,
-          lastItem
-        );
-
-        setHasMoreItems(hasMore);
-        setLastItem(newItems[newItems.length - 1]);
-        addItems(newItems);
-      }
-    } catch (error) {
-      displayErrorMessage(`Failed to load feed items because of exception: ${error}`);
-    }
+    presenter.loadMoreItems(authToken!, displayedUser!);
   }
 
   return (
@@ -63,14 +50,15 @@ function StatusItemScroller(props: Props) {
         className="pr-0 mr-0"
         dataLength={statusItems.length}
         next={loadMoreStatusItems}
-        hasMore={hasMoreItems}
+        hasMore={presenter.hasMoreItems}
         loader={<h4>Loading...</h4>}
       >
-        {statusItems.map((item, index) => <StatusItem status={item} key={index} />)}
+        {statusItems.map((item, index) => (
+          <StatusItem status={item} key={index} />
+        ))}
       </InfiniteScroll>
     </div>
   );
 }
-
 
 export default StatusItemScroller;

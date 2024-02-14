@@ -1,4 +1,7 @@
 import { AuthToken, User } from "tweeter-shared";
+import { FollowService } from "../../model/service/FollowService";
+
+export const USER_ITEM_PAGE_SIZE = 10;
 
 export interface UserItemView {
   addItems: (newItems: User[]) => void;
@@ -8,9 +11,11 @@ export interface UserItemView {
 export abstract class UserItemPresenter {
   private _view: UserItemView;
   private _hasMoreItems: boolean = true;
+  protected service: FollowService;
 
   protected constructor(view: UserItemView) {
     this._view = view;
+    this.service = new FollowService();
   }
 
   protected get view(): UserItemView {

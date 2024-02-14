@@ -85,9 +85,9 @@ const UserInfoProvider: React.FC<Props> = ({ children }) => {
   ) => {
     setUserInfo({
       ...userInfo,
-      currentUser: currentUser,
-      displayedUser: displayedUser,
-      authToken: authToken,
+      currentUser,
+      displayedUser,
+      authToken,
     });
 
     if (remember) {
@@ -113,9 +113,9 @@ const UserInfoProvider: React.FC<Props> = ({ children }) => {
     <UserInfoContext.Provider
       value={{
         ...userInfo,
-        updateUserInfo: updateUserInfo,
-        clearUserInfo: clearUserInfo,
-        setDisplayedUser: setDisplayedUser,
+        updateUserInfo,
+        clearUserInfo,
+        setDisplayedUser,
       }}
     >
       {children}

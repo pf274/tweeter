@@ -10,13 +10,15 @@ import Login from "./components/authentication/login/Login";
 import Register from "./components/authentication/register/Register";
 import MainLayout from "./components/mainLayout/MainLayout";
 import Toaster from "./components/toaster/Toaster";
-import { AuthToken, User, FakeData, Status } from "tweeter-shared";
 import UserItemScroller from "./components/mainLayout/UserItemScroller";
 import StatusItemScroller from "./components/mainLayout/StatusItemScroller";
 import useUserInfoHook from "./components/userInfo/UserInfoHook";
-import { FollowingPresenter } from "./presenter/FollowingPresenter";
-import { UserItemView } from "./presenter/UserItemPresenter";
-import { FollowersPresenter } from "./presenter/FollowersPresenter";
+import { FollowingPresenter } from "./presenter/follow/FollowingPresenter";
+import { UserItemView } from "./presenter/follow/UserItemPresenter";
+import { FollowersPresenter } from "./presenter/follow/FollowersPresenter";
+import { FeedPresenter } from "./presenter/status/FeedPresenter";
+import { StatusItemView } from "./presenter/status/StatusPresenter";
+import { StoryPresenter } from "./presenter/status/StoryPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfoHook();
@@ -40,34 +42,29 @@ const App = () => {
 };
 
 const AuthenticatedRoutes = () => {
-  const loadMoreFeedItems = async (
-    authToken: AuthToken,
-    user: User,
-    pageSize: number,
-    lastItem: Status | null
-  ): Promise<[Status[], boolean]> => {
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
-  const loadMoreStoryItems = async (
-    authToken: AuthToken,
-    user: User,
-    pageSize: number,
-    lastItem: Status | null
-  ): Promise<[Status[], boolean]> => {
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
-
   return (
     <Routes>
       <Route element={<MainLayout />}>
         <Route index element={<Navigate to="/feed" />} />
         <Route
           path="feed"
-          element={<StatusItemScroller loadItems={loadMoreFeedItems} />}
+          element={
+            <StatusItemScroller
+              presenterGenerator={(view: StatusItemView) =>
+                new FeedPresenter(view)
+              }
+            />
+          }
         />
         <Route
           path="story"
-          element={<StatusItemScroller loadItems={loadMoreStoryItems} />}
+          element={
+            <StatusItemScroller
+              presenterGenerator={(view: StatusItemView) =>
+                new StoryPresenter(view)
+              }
+            />
+          }
         />
         <Route
           path="following"
