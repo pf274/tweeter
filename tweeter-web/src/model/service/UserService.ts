@@ -72,6 +72,7 @@ export class UserService {
     authToken: AuthToken,
     alias: string
   ): Promise<User | null> {
+    // TODO: Move this to UserInfoService.ts
     // TODO: Replace with the result of calling server
     return FakeData.instance.findUserByAlias(alias);
   }
