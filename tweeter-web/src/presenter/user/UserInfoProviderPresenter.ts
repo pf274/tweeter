@@ -2,34 +2,41 @@ import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../../model/service/UserService";
 import { UserInfoService } from "../../model/service/UserInfoService";
 
-export interface UserInfoProviderView {
-  setUserInfo: (value: any) => void;
-}
+export interface UserInfoProviderView {}
 
 export class UserInfoProviderPresenter {
   private _view: UserInfoProviderView;
   private service: UserInfoService;
 
-  constructor(view: UserInfoProviderView) {
+  public constructor(view: UserInfoProviderView) {
     this._view = view;
     this.service = new UserInfoService();
   }
 
-  updateUserInfo(
-    currentUser: User,
-    displayedUser: User | null,
-    authToken: AuthToken,
-    remember: boolean
-  ) {
-    this._view.setUserInfo({
-      ...userInfo,
-      currentUser,
-      displayedUser,
-      authToken,
-    });
+  public retrieveFromLocalStorage(): {
+    currentUser: User | null;
+    displayedUser: User | null;
+    authToken: AuthToken | null;
+  } {
+    const loggedInUser = this.service.retrieveLoggedInUserFromLocalStorage();
+    let authToken = this.service.retrieveAuthTokenFromLocalStorage();
 
-    if (remember) {
-      this.service.saveToLocalStorage(currentUser, authToken);
+    if (!!loggedInUser && !!authToken) {
+      return {
+        currentUser: loggedInUser,
+        displayedUser: loggedInUser,
+        authToken,
+      };
+    } else {
+      return { currentUser: null, displayedUser: null, authToken: null };
     }
+  }
+
+  public clearLocalStorage(): void {
+    this.service.clearLocalStorage();
+  }
+
+  public saveToLocalStorage(currentUser: User, authToken: AuthToken): void {
+    this.service.saveToLocalStorage(currentUser, authToken);
   }
 }

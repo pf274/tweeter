@@ -9,37 +9,16 @@ export class UserInfoService {
     localStorage.setItem(AUTH_TOKEN_KEY, authToken.toJson());
   }
 
-  retrieveFromLocalStorage(
-    currentUser: User | null,
-    displayedUser: User | null,
-    authToken: AuthToken | null
-  ) {
-    let loggedInUser = User.fromJson(localStorage.getItem(CURRENT_USER_KEY));
-    let authToken2 = AuthToken.fromJson(localStorage.getItem(AUTH_TOKEN_KEY));
+  public retrieveLoggedInUserFromLocalStorage(): User | null {
+    return User.fromJson(localStorage.getItem(CURRENT_USER_KEY));
+  }
 
-    if (!!loggedInUser && !!authToken) {
-      return {
-        currentUser: loggedInUser,
-        displayedUser: loggedInUser,
-        authToken: authToken2,
-      };
-    } else {
-      return { currentUser: null, displayedUser: null, authToken: null };
-    }
+  public retrieveAuthTokenFromLocalStorage(): AuthToken | null {
+    return AuthToken.fromJson(localStorage.getItem(AUTH_TOKEN_KEY));
   }
 
   clearLocalStorage(): void {
     localStorage.removeItem(CURRENT_USER_KEY);
     localStorage.removeItem(AUTH_TOKEN_KEY);
-  }
-
-  clearUserInfo() {
-    setUserInfo({
-      ...userInfo,
-      currentUser: null,
-      displayedUser: null,
-      authToken: null,
-    });
-    clearLocalStorage();
   }
 }
