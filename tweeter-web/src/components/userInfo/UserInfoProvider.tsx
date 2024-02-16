@@ -79,7 +79,7 @@ const UserInfoProvider: React.FC<Props> = ({ children }) => {
   };
 
   const setDisplayedUser = (user: User) => {
-    setUserInfo({ ...userInfo, displayedUser: user });
+    setUserInfo((prevUserInfo) => ({ ...prevUserInfo, displayedUser: user }));
   };
 
   return (
