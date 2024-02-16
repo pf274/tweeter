@@ -1,5 +1,5 @@
 import { AuthToken, User } from "tweeter-shared";
-import { UserService } from "../../model/service/UserService";
+import { UserInfoService } from "../../model/service/UserInfoService";
 
 export interface UserNavigationView {
   displayErrorMessage: (message: string) => void;
@@ -8,11 +8,11 @@ export interface UserNavigationView {
 
 export class UserNavigationPresenter {
   private _view: UserNavigationView;
-  private service: UserService;
+  private service: UserInfoService;
 
   public constructor(view: UserNavigationView) {
     this._view = view;
-    this.service = new UserService();
+    this.service = new UserInfoService();
   }
 
   public async setDisplayedUser(

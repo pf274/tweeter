@@ -16,20 +16,21 @@ interface Props {
 function StatusItemScroller(props: Props) {
   const { displayErrorMessage } = useToastListener();
   const [statusItems, setStatusItems] = useState<Status[]>([]);
+
+  // Required to allow the addItems method to see the current value of 'items'
+  // instead of the value from when the closure was created.
+  const statusItemsReference = useRef(statusItems);
+  statusItemsReference.current = statusItems;
+
   const listener: StatusItemView = {
     addItems(newItems: Status[]) {
-      setStatusItems([...statusItems, ...newItems]);
+      setStatusItems([...statusItemsReference.current, ...newItems]);
     },
     displayErrorMessage: displayErrorMessage,
   };
   const [presenter] = useState<StatusItemPresenter>(
     props.presenterGenerator(listener)
   );
-
-  // Required to allow the addItems method to see the current value of 'items'
-  // instead of the value from when the closure was created.
-  const statusItemsReference = useRef(statusItems);
-  statusItemsReference.current = statusItems;
 
   const { displayedUser, authToken } = useUserInfoHook();
 

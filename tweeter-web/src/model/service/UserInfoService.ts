@@ -1,4 +1,4 @@
-import { AuthToken, User } from "tweeter-shared";
+import { AuthToken, FakeData, User } from "tweeter-shared";
 
 const CURRENT_USER_KEY: string = "CurrentUserKey";
 const AUTH_TOKEN_KEY: string = "AuthTokenKey";
@@ -20,5 +20,13 @@ export class UserInfoService {
   clearLocalStorage(): void {
     localStorage.removeItem(CURRENT_USER_KEY);
     localStorage.removeItem(AUTH_TOKEN_KEY);
+  }
+
+  public async getUserByAlias(
+    authToken: AuthToken,
+    alias: string
+  ): Promise<User | null> {
+    // TODO: Replace with the result of calling server
+    return FakeData.instance.findUserByAlias(alias);
   }
 }
