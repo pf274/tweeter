@@ -5,6 +5,7 @@ export interface PostStatusView {
   displayErrorMessage: (message: string) => void;
   displayInfoMessage: (message: string, duration: number) => void;
   clearLastInfoMessage: () => void;
+  setPost: (value: string) => void;
 }
 
 export class PostStatusPresenter {
@@ -21,6 +22,8 @@ export class PostStatusPresenter {
       this._view.displayInfoMessage("Posting status...", 0);
 
       await this.service.postStatus(authToken, status);
+
+      this._view.setPost("");
 
       this._view.clearLastInfoMessage();
       this._view.displayInfoMessage("Status posted!", 2000);

@@ -14,14 +14,14 @@ const PostStatus = () => {
 
   const { currentUser, authToken } = useUserInfoHook();
 
+  const [post, setPost] = useState("");
   const listener: PostStatusView = {
     displayErrorMessage: displayErrorMessage,
     displayInfoMessage: displayInfoMessage,
     clearLastInfoMessage: clearLastInfoMessage,
+    setPost: setPost,
   };
   const [presenter] = useState(new PostStatusPresenter(listener));
-
-  const [post, setPost] = useState("");
 
   const submitPost = async (event: React.MouseEvent) => {
     event.preventDefault();
