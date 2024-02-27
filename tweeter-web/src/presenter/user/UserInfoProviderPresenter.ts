@@ -1,15 +1,15 @@
 import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../../model/service/UserService";
 import { UserInfoService } from "../../model/service/UserInfoService";
+import { Presenter, View } from "../generics/Presenter";
 
-export interface UserInfoProviderView {}
+export interface UserInfoProviderView extends View {}
 
-export class UserInfoProviderPresenter {
-  private _view: UserInfoProviderView;
+export class UserInfoProviderPresenter extends Presenter {
   private service: UserInfoService;
 
   public constructor(view: UserInfoProviderView) {
-    this._view = view;
+    super(view);
     this.service = new UserInfoService();
   }
 
@@ -19,7 +19,7 @@ export class UserInfoProviderPresenter {
     authToken: AuthToken | null;
   } {
     const loggedInUser = this.service.retrieveLoggedInUserFromLocalStorage();
-    let authToken = this.service.retrieveAuthTokenFromLocalStorage();
+    const authToken = this.service.retrieveAuthTokenFromLocalStorage();
 
     if (!!loggedInUser && !!authToken) {
       return {

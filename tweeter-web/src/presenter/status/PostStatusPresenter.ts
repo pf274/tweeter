@@ -1,36 +1,33 @@
 import { AuthToken, Status } from "tweeter-shared";
 import { StatusService } from "../../model/service/StatusService";
+import { MessageView, Presenter, View } from "../generics/Presenter";
 
-export interface PostStatusView {
-  displayErrorMessage: (message: string) => void;
-  displayInfoMessage: (message: string, duration: number) => void;
-  clearLastInfoMessage: () => void;
+export interface PostStatusView extends MessageView {
   setPost: (value: string) => void;
 }
 
-export class PostStatusPresenter {
-  private _view: PostStatusView;
+export class PostStatusPresenter extends Presenter {
   private service: StatusService;
 
   constructor(view: PostStatusView) {
-    this._view = view;
+    super(view);
     this.service = new StatusService();
   }
 
   public async postStatus(authToken: AuthToken, status: Status): Promise<void> {
-    try {
-      this._view.displayInfoMessage("Posting status...", 0);
+    this.doFailureReportingOperation(async () => {
+      this.view.displayInfoMessage("Posting status...", 0);
 
       await this.service.postStatus(authToken, status);
 
-      this._view.setPost("");
+      this.view.setPost("");
 
-      this._view.clearLastInfoMessage();
-      this._view.displayInfoMessage("Status posted!", 2000);
-    } catch (error) {
-      this._view.displayErrorMessage(
-        `Failed to post the status because of exception: ${error}`
-      );
-    }
+      this.view.clearLastInfoMessage();
+      this.view.displayInfoMessage("Status posted!", 2000);
+    }, "post the status");
+  }
+
+  protected get view(): PostStatusView {
+    return super.view as PostStatusView;
   }
 }

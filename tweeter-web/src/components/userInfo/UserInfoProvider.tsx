@@ -41,7 +41,9 @@ interface Props {
 }
 
 const UserInfoProvider: React.FC<Props> = ({ children }) => {
-  const listener: UserInfoProviderView = {};
+  const listener: UserInfoProviderView = {
+    displayErrorMessage: (message: string) => console.error(message), // TODO: this function is not actually used by the UserInfoProviderPresenter.
+  };
 
   const presenter = new UserInfoProviderPresenter(listener);
 

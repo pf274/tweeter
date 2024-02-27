@@ -17,7 +17,7 @@ import { FollowingPresenter } from "./presenter/follow/FollowingPresenter";
 import { UserItemView } from "./presenter/follow/UserItemPresenter";
 import { FollowersPresenter } from "./presenter/follow/FollowersPresenter";
 import { FeedPresenter } from "./presenter/status/FeedPresenter";
-import { StatusItemView } from "./presenter/status/StatusPresenter";
+import { StatusItemView } from "./presenter/status/StatusItemPresenter";
 import { StoryPresenter } from "./presenter/status/StoryPresenter";
 
 const App = () => {

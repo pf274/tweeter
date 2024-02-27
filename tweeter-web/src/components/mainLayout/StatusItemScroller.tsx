@@ -7,7 +7,7 @@ import useUserInfoHook from "../userInfo/UserInfoHook";
 import {
   StatusItemPresenter,
   StatusItemView,
-} from "../../presenter/status/StatusPresenter";
+} from "../../presenter/status/StatusItemPresenter";
 
 interface Props {
   presenterGenerator: (view: StatusItemView) => StatusItemPresenter;
@@ -41,7 +41,7 @@ function StatusItemScroller(props: Props) {
   }, []);
 
   async function loadMoreStatusItems() {
-    presenter.loadMoreItems(authToken!, displayedUser!);
+    presenter.itemLoad(authToken!, displayedUser!);
   }
 
   return (

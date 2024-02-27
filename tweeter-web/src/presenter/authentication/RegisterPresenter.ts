@@ -1,8 +1,9 @@
 import { AuthToken, User } from "tweeter-shared";
 import { AuthenticationService } from "../../model/service/AuthenticationService";
 import { Buffer } from "buffer";
+import { Presenter, View } from "../generics/Presenter";
 
-export interface RegisterView {
+export interface RegisterView extends View {
   updateUserInfo: (
     currentUser: User,
     displayedUser: User | null,
@@ -10,15 +11,13 @@ export interface RegisterView {
     remember: boolean
   ) => void;
   navigate: (path: string) => void;
-  displayErrorMessage: (message: string) => void;
 }
 
-export class RegisterPresenter {
-  private view: RegisterView;
+export class RegisterPresenter extends Presenter {
   private service: AuthenticationService;
 
   public constructor(view: RegisterView) {
-    this.view = view;
+    super(view);
     this.service = new AuthenticationService();
   }
 
@@ -30,7 +29,7 @@ export class RegisterPresenter {
     imageBytes: Uint8Array,
     rememberMe: boolean
   ): Promise<void> {
-    try {
+    this.doFailureReportingOperation(async () => {
       let [user, authToken] = await this.service.register(
         alias,
         password,
@@ -40,11 +39,11 @@ export class RegisterPresenter {
       );
       this.view.updateUserInfo(user, user, authToken, rememberMe);
       this.view.navigate("/");
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to register because of exception: ${error}`
-      );
-    }
+    }, "register user");
+  }
+
+  protected get view(): RegisterView {
+    return super.view as RegisterView;
   }
 
   public checkStatus(

@@ -4,6 +4,7 @@ import UserItem from "../userItem/UserItem";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoHook from "../userInfo/UserInfoHook";
 import {
+  USER_ITEM_PAGE_SIZE,
   UserItemPresenter,
   UserItemView,
 } from "../../presenter/follow/UserItemPresenter";
@@ -35,7 +36,7 @@ const UserItemScroller = (props: Props) => {
 
   // Load initial items
   useEffect(() => {
-    loadMoreItems();
+    presenter.loadMoreItems(authToken!, displayedUser!);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
