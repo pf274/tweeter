@@ -4,13 +4,11 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import useToastListener from "../toaster/ToastListenerHook";
 import StatusItem from "../statusItem/StatusItem";
 import useUserInfoHook from "../userInfo/UserInfoHook";
-import {
-  StatusItemPresenter,
-  StatusItemView,
-} from "../../presenter/status/StatusItemPresenter";
+import { StatusItemPresenter } from "../../presenter/status/StatusItemPresenter";
+import { PagedItemView } from "../../presenter/generics/PagedItemPresenter";
 
 interface Props {
-  presenterGenerator: (view: StatusItemView) => StatusItemPresenter;
+  presenterGenerator: (view: PagedItemView<Status>) => StatusItemPresenter;
 }
 
 function StatusItemScroller(props: Props) {
@@ -22,15 +20,13 @@ function StatusItemScroller(props: Props) {
   const statusItemsReference = useRef(statusItems);
   statusItemsReference.current = statusItems;
 
-  const listener: StatusItemView = {
+  const listener: PagedItemView<Status> = {
     addItems(newItems: Status[]) {
       setStatusItems([...statusItemsReference.current, ...newItems]);
     },
     displayErrorMessage: displayErrorMessage,
   };
-  const [presenter] = useState<StatusItemPresenter>(
-    props.presenterGenerator(listener)
-  );
+  const [presenter] = useState<StatusItemPresenter>(props.presenterGenerator(listener));
 
   const { displayedUser, authToken } = useUserInfoHook();
 

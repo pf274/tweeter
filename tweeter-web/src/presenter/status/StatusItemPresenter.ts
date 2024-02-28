@@ -4,10 +4,8 @@ import { PagedItemPresenter, PagedItemView } from "../generics/PagedItemPresente
 
 export const FEED_PAGE_SIZE = 10;
 
-export interface StatusItemView extends PagedItemView<Status> {}
-
 export abstract class StatusItemPresenter extends PagedItemPresenter<Status, StatusService> {
-  protected constructor(view: StatusItemView, intent: string) {
+  protected constructor(view: PagedItemView<Status>, intent: string) {
     super(view, intent);
     this.service = this.createService();
   }

@@ -1,5 +1,6 @@
 import { AuthToken, Status, User } from "tweeter-shared";
-import { FEED_PAGE_SIZE, StatusItemPresenter, StatusItemView } from "./StatusItemPresenter";
+import { FEED_PAGE_SIZE, StatusItemPresenter } from "./StatusItemPresenter";
+import { PagedItemView } from "../generics/PagedItemPresenter";
 
 export class StoryPresenter extends StatusItemPresenter {
   public getMoreItems(
@@ -8,7 +9,7 @@ export class StoryPresenter extends StatusItemPresenter {
   ): Promise<[newItems: Status[], hasMore: boolean]> {
     return this.service.loadMoreStoryItems(authToken, user, FEED_PAGE_SIZE, this.lastItem);
   }
-  public constructor(view: StatusItemView) {
+  public constructor(view: PagedItemView<Status>) {
     super(view, "load more story items");
   }
 }

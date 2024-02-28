@@ -10,10 +10,9 @@ import useUserInfoHook from "./components/userInfo/UserInfoHook";
 import { FollowingPresenter } from "./presenter/follow/FollowingPresenter";
 import { FollowersPresenter } from "./presenter/follow/FollowersPresenter";
 import { FeedPresenter } from "./presenter/status/FeedPresenter";
-import { StatusItemView } from "./presenter/status/StatusItemPresenter";
 import { StoryPresenter } from "./presenter/status/StoryPresenter";
 import { PagedItemView } from "./presenter/generics/PagedItemPresenter";
-import { User } from "tweeter-shared";
+import { Status, User } from "tweeter-shared";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfoHook();
@@ -41,7 +40,7 @@ const AuthenticatedRoutes = () => {
           path="feed"
           element={
             <StatusItemScroller
-              presenterGenerator={(view: StatusItemView) => new FeedPresenter(view)}
+              presenterGenerator={(view: PagedItemView<Status>) => new FeedPresenter(view)}
             />
           }
         />
@@ -49,7 +48,7 @@ const AuthenticatedRoutes = () => {
           path="story"
           element={
             <StatusItemScroller
-              presenterGenerator={(view: StatusItemView) => new StoryPresenter(view)}
+              presenterGenerator={(view: PagedItemView<Status>) => new StoryPresenter(view)}
             />
           }
         />
