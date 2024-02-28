@@ -1,11 +1,5 @@
 import "./App.css";
-import {
-  BrowserRouter,
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Login from "./components/authentication/login/Login";
 import Register from "./components/authentication/register/Register";
 import MainLayout from "./components/mainLayout/MainLayout";
@@ -14,11 +8,12 @@ import UserItemScroller from "./components/mainLayout/UserItemScroller";
 import StatusItemScroller from "./components/mainLayout/StatusItemScroller";
 import useUserInfoHook from "./components/userInfo/UserInfoHook";
 import { FollowingPresenter } from "./presenter/follow/FollowingPresenter";
-import { UserItemView } from "./presenter/follow/UserItemPresenter";
 import { FollowersPresenter } from "./presenter/follow/FollowersPresenter";
 import { FeedPresenter } from "./presenter/status/FeedPresenter";
 import { StatusItemView } from "./presenter/status/StatusItemPresenter";
 import { StoryPresenter } from "./presenter/status/StoryPresenter";
+import { PagedItemView } from "./presenter/generics/PagedItemPresenter";
+import { User } from "tweeter-shared";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfoHook();
@@ -31,11 +26,7 @@ const App = () => {
     <div>
       <Toaster position="top-right" />
       <BrowserRouter>
-        {isAuthenticated() ? (
-          <AuthenticatedRoutes />
-        ) : (
-          <UnauthenticatedRoutes />
-        )}
+        {isAuthenticated() ? <AuthenticatedRoutes /> : <UnauthenticatedRoutes />}
       </BrowserRouter>
     </div>
   );
@@ -50,9 +41,7 @@ const AuthenticatedRoutes = () => {
           path="feed"
           element={
             <StatusItemScroller
-              presenterGenerator={(view: StatusItemView) =>
-                new FeedPresenter(view)
-              }
+              presenterGenerator={(view: StatusItemView) => new FeedPresenter(view)}
             />
           }
         />
@@ -60,9 +49,7 @@ const AuthenticatedRoutes = () => {
           path="story"
           element={
             <StatusItemScroller
-              presenterGenerator={(view: StatusItemView) =>
-                new StoryPresenter(view)
-              }
+              presenterGenerator={(view: StatusItemView) => new StoryPresenter(view)}
             />
           }
         />
@@ -70,9 +57,7 @@ const AuthenticatedRoutes = () => {
           path="following"
           element={
             <UserItemScroller
-              presenterGenerator={(view: UserItemView) =>
-                new FollowingPresenter(view)
-              }
+              presenterGenerator={(view: PagedItemView<User>) => new FollowingPresenter(view)}
             />
           }
         />
@@ -80,9 +65,7 @@ const AuthenticatedRoutes = () => {
           path="followers"
           element={
             <UserItemScroller
-              presenterGenerator={(view: UserItemView) =>
-                new FollowersPresenter(view)
-              }
+              presenterGenerator={(view: PagedItemView<User>) => new FollowersPresenter(view)}
             />
           }
         />

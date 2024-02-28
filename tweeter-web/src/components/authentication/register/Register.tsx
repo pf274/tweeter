@@ -6,10 +6,8 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationFields from "../AuthenticationFields";
 import useUserInfoHook from "../../userInfo/UserInfoHook";
-import {
-  RegisterPresenter,
-  RegisterView,
-} from "../../../presenter/authentication/RegisterPresenter";
+import { RegisterPresenter } from "../../../presenter/authentication/RegisterPresenter";
+import { AuthView } from "../../../presenter/generics/AuthPresenter";
 
 const Register = () => {
   const [alias, setAlias] = useState("");
@@ -26,7 +24,7 @@ const Register = () => {
   const rememberMeRef = useRef(rememberMe);
   rememberMeRef.current = rememberMe;
 
-  const listener: RegisterView = {
+  const listener: AuthView = {
     updateUserInfo,
     navigate,
     displayErrorMessage,
@@ -42,24 +40,11 @@ const Register = () => {
   };
 
   const doRegister = async () => {
-    presenter.doRegister(
-      alias,
-      firstName,
-      lastName,
-      password,
-      imageBytes,
-      rememberMeRef.current
-    );
+    presenter.doRegister(alias, firstName, lastName, password, imageBytes, rememberMeRef.current);
   };
 
   const submitButtonDisabled = () => {
-    return presenter.checkStatus(
-      alias,
-      firstName,
-      lastName,
-      password,
-      imageUrl
-    );
+    return presenter.checkStatus(alias, firstName, lastName, password, imageUrl);
   };
 
   const inputFieldGenerator = () => {

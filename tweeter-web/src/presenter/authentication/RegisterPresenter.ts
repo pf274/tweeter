@@ -1,24 +1,9 @@
-import { AuthToken, User } from "tweeter-shared";
-import { AuthenticationService } from "../../model/service/AuthenticationService";
 import { Buffer } from "buffer";
-import { Presenter, View } from "../generics/Presenter";
+import { AuthPresenter, AuthView } from "../generics/AuthPresenter";
 
-export interface RegisterView extends View {
-  updateUserInfo: (
-    currentUser: User,
-    displayedUser: User | null,
-    authToken: AuthToken,
-    remember: boolean
-  ) => void;
-  navigate: (path: string) => void;
-}
-
-export class RegisterPresenter extends Presenter {
-  private service: AuthenticationService;
-
-  public constructor(view: RegisterView) {
+export class RegisterPresenter extends AuthPresenter {
+  public constructor(view: AuthView) {
     super(view);
-    this.service = new AuthenticationService();
   }
 
   public async doRegister(
@@ -29,21 +14,15 @@ export class RegisterPresenter extends Presenter {
     imageBytes: Uint8Array,
     rememberMe: boolean
   ): Promise<void> {
-    this.doFailureReportingOperation(async () => {
-      let [user, authToken] = await this.service.register(
-        alias,
-        password,
-        firstName,
-        lastName,
-        imageBytes
-      );
-      this.view.updateUserInfo(user, user, authToken, rememberMe);
-      this.view.navigate("/");
-    }, "register user");
+    this.handleUserAuthentication(
+      () => this.service.register(alias, password, firstName, lastName, imageBytes),
+      rememberMe,
+      "register user"
+    );
   }
 
-  protected get view(): RegisterView {
-    return super.view as RegisterView;
+  protected get view(): AuthView {
+    return super.view as AuthView;
   }
 
   public checkStatus(
@@ -56,9 +35,7 @@ export class RegisterPresenter extends Presenter {
     return !firstName || !lastName || !alias || !password || !imageUrl;
   }
 
-  public handleImageFile(
-    file: File | undefined
-  ): [newImageBytes: Uint8Array, newImageUrl: string] {
+  public handleImageFile(file: File | undefined): [newImageBytes: Uint8Array, newImageUrl: string] {
     let newImageBytes: Uint8Array = new Uint8Array();
     let newImageUrl: string = "";
     if (file) {
@@ -69,13 +46,9 @@ export class RegisterPresenter extends Presenter {
         const imageStringBase64 = event.target?.result as string;
 
         // Remove unnecessary file metadata from the start of the string.
-        const imageStringBase64BufferContents =
-          imageStringBase64.split("base64,")[1];
+        const imageStringBase64BufferContents = imageStringBase64.split("base64,")[1];
 
-        const bytes: Uint8Array = Buffer.from(
-          imageStringBase64BufferContents,
-          "base64"
-        );
+        const bytes: Uint8Array = Buffer.from(imageStringBase64BufferContents, "base64");
 
         newImageBytes = bytes;
       };

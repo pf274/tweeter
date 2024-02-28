@@ -5,17 +5,16 @@ export interface PagedItemView<ItemType> extends View {
   addItems: (newItems: ItemType[]) => void;
 }
 
-export abstract class PagedItemPresenter<
-  ItemType,
-  ServiceType
-> extends Presenter {
+export abstract class PagedItemPresenter<ItemType, ServiceType> extends Presenter {
   protected service: ServiceType;
   private _hasMoreItems: boolean = true;
   private _lastItem: ItemType | null = null;
+  private intent: string;
 
-  protected constructor(view: PagedItemView<ItemType>) {
+  protected constructor(view: PagedItemView<ItemType>, intent: string) {
     super(view);
     this.service = this.createService();
+    this.intent = intent;
   }
 
   public set hasMoreItems(value: boolean) {
@@ -52,42 +51,21 @@ export abstract class PagedItemPresenter<
    * @param intent
    * @param getMoreItems
    */
-  public async itemLoad(
-    authToken: AuthToken,
-    displayedUser: User,
-    pageSize: number,
-    intent: string,
-    getMoreItems: (
-      authToken: AuthToken,
-      displayedUser: User,
-      pageSize: number,
-      lastItem: ItemType | null
-    ) => Promise<[newItems: ItemType[], hasMore: boolean]>
-  ): Promise<void> {
+  public async loadMoreItems(authToken: AuthToken, displayedUser: User): Promise<void> {
     this.doFailureReportingOperation(async () => {
       if (!this.hasMoreItems) {
         return;
       }
-      let [newItems, hasMore] = await getMoreItems(
-        authToken,
-        displayedUser,
-        pageSize,
-        this.lastItem
-      );
+      let [newItems, hasMore] = await this.getMoreItems(authToken, displayedUser);
 
       this.hasMoreItems = hasMore;
       this.lastItem = newItems[newItems.length - 1];
       this.view.addItems(newItems);
-    }, intent);
+    }, this.intent);
   }
 
-  /**
-   * Abstract method to Load more items from the service and add them to the view.
-   * @param authToken
-   * @param displayedUser
-   */
-  public abstract loadMoreItems(
+  public abstract getMoreItems(
     authToken: AuthToken,
-    displayedUser: User
-  ): Promise<void>;
+    user: User
+  ): Promise<[newItems: ItemType[], hasMore: boolean]>;
 }

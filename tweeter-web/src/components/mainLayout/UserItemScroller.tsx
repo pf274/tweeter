@@ -3,29 +3,24 @@ import { useState, useRef, useEffect } from "react";
 import UserItem from "../userItem/UserItem";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoHook from "../userInfo/UserInfoHook";
-import {
-  USER_ITEM_PAGE_SIZE,
-  UserItemPresenter,
-  UserItemView,
-} from "../../presenter/follow/UserItemPresenter";
+import { USER_ITEM_PAGE_SIZE, UserItemPresenter } from "../../presenter/follow/UserItemPresenter";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { PagedItemView } from "../../presenter/generics/PagedItemPresenter";
 
 interface Props {
-  presenterGenerator: (view: UserItemView) => UserItemPresenter;
+  presenterGenerator: (view: PagedItemView<User>) => UserItemPresenter;
 }
 
 const UserItemScroller = (props: Props) => {
   const { displayErrorMessage } = useToastListener();
   const [items, setItems] = useState<User[]>([]);
-  const listener: UserItemView = {
+  const listener: PagedItemView<User> = {
     addItems: (newItems: User[]) => {
       setItems([...itemsReference.current, ...newItems]);
     },
     displayErrorMessage: displayErrorMessage,
   };
-  const [presenter] = useState<UserItemPresenter>(
-    props.presenterGenerator(listener)
-  );
+  const [presenter] = useState<UserItemPresenter>(props.presenterGenerator(listener));
 
   // Required to allow the addItems method to see the current value of 'items'
   // instead of the value from when the closure was created.
@@ -54,10 +49,7 @@ const UserItemScroller = (props: Props) => {
         loader={<h4>Loading...</h4>}
       >
         {items.map((item, index) => (
-          <div
-            key={index}
-            className="row mb-3 mx-0 px-0 border rounded bg-white"
-          >
+          <div key={index} className="row mb-3 mx-0 px-0 border rounded bg-white">
             <UserItem value={item} />
           </div>
         ))}

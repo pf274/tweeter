@@ -19,17 +19,13 @@ export class UserInfoProviderPresenter extends Presenter {
     authToken: AuthToken | null;
   } {
     const loggedInUser = this.service.retrieveLoggedInUserFromLocalStorage();
-    const authToken = this.service.retrieveAuthTokenFromLocalStorage();
+    const retrievedAuthToken = this.service.retrieveAuthTokenFromLocalStorage();
 
-    if (!!loggedInUser && !!authToken) {
-      return {
-        currentUser: loggedInUser,
-        displayedUser: loggedInUser,
-        authToken,
-      };
-    } else {
-      return { currentUser: null, displayedUser: null, authToken: null };
-    }
+    return {
+      currentUser: loggedInUser,
+      displayedUser: loggedInUser,
+      authToken: retrievedAuthToken,
+    };
   }
 
   public clearLocalStorage(): void {

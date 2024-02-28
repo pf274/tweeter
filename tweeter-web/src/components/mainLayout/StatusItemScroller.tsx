@@ -41,7 +41,7 @@ function StatusItemScroller(props: Props) {
   }, []);
 
   async function loadMoreStatusItems() {
-    presenter.itemLoad(authToken!, displayedUser!);
+    presenter.loadMoreItems(authToken!, displayedUser!);
   }
 
   return (
