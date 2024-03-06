@@ -19,6 +19,7 @@ function AuthenticationFields({
           className="form-control"
           size={50}
           id="aliasInput"
+          aria-label="aliasInput"
           placeholder="name@example.com"
           autoComplete="off"
           onChange={(event) => setAlias(event.target.value)}
@@ -30,6 +31,7 @@ function AuthenticationFields({
           type="password"
           className="form-control"
           id="passwordInput"
+          aria-label="passwordInput"
           placeholder="Password"
           onChange={(event) => setPassword(event.target.value)}
         />
