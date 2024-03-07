@@ -1,6 +1,6 @@
 import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../../model/service/UserService";
-import { MessageView, Presenter, View } from "../generics/Presenter";
+import { MessageView, Presenter } from "../generics/Presenter";
 
 export interface UserInfoView extends MessageView {}
 
@@ -52,36 +52,21 @@ export class UserInfoPresenter extends Presenter {
     }, "determine follower status");
   }
 
-  public async setNumbFollowees(
-    authToken: AuthToken,
-    displayedUser: User
-  ): Promise<void> {
+  public async setNumbFollowees(authToken: AuthToken, displayedUser: User): Promise<void> {
     this.doFailureReportingOperation(async () => {
-      this._followeesCount = await this.service.getFolloweesCount(
-        authToken,
-        displayedUser
-      );
+      this._followeesCount = await this.service.getFolloweesCount(authToken, displayedUser);
     }, "get followees count");
   }
 
-  public async setNumbFollowers(
-    authToken: AuthToken,
-    displayedUser: User
-  ): Promise<void> {
+  public async setNumbFollowers(authToken: AuthToken, displayedUser: User): Promise<void> {
     this.doFailureReportingOperation(async () => {
-      this._followersCount = await this.service.getFollowersCount(
-        authToken,
-        displayedUser
-      );
+      this._followersCount = await this.service.getFollowersCount(authToken, displayedUser);
     }, "get followers count");
   }
 
   public async follow(authToken: AuthToken, userToFollow: User): Promise<void> {
     this.doFailureReportingOperation(async () => {
-      this.view.displayInfoMessage(
-        `Adding ${userToFollow!.name} to followers...`,
-        0
-      );
+      this.view.displayInfoMessage(`Adding ${userToFollow!.name} to followers...`, 0);
 
       let [newFollowersCount, newFolloweesCount] = await this.service.follow(
         authToken,
@@ -96,18 +81,14 @@ export class UserInfoPresenter extends Presenter {
     }, "follow user");
   }
 
-  public async unfollow(
-    authToken: AuthToken,
-    userToUnfollow: User
-  ): Promise<void> {
+  public async unfollow(authToken: AuthToken, userToUnfollow: User): Promise<void> {
     this.doFailureReportingOperation(async () => {
-      this.view.displayInfoMessage(
-        `Removing ${userToUnfollow.name} from followers...`,
-        0
-      );
+      this.view.displayInfoMessage(`Removing ${userToUnfollow.name} from followers...`, 0);
 
-      const [newFollowersCount, newFolloweesCount] =
-        await this.service.unfollow(authToken, userToUnfollow);
+      const [newFollowersCount, newFolloweesCount] = await this.service.unfollow(
+        authToken,
+        userToUnfollow
+      );
 
       this.view.clearLastInfoMessage();
 

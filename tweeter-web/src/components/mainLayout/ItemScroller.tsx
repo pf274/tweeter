@@ -3,15 +3,22 @@ import { PagedItemPresenter, PagedItemView } from "../../presenter/generics/Page
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoHook from "../userInfo/UserInfoHook";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Status, User } from "tweeter-shared";
+import { FollowService } from "../../model/service/FollowService";
+import { StatusService } from "../../model/service/StatusService";
 
-export interface ItemScrollerProps<ItemType, ServiceType> {
+export interface ItemScrollerProps<
+  ItemType extends Status | User,
+  ServiceType extends FollowService | StatusService
+> {
   presenterGenerator: (view: PagedItemView<ItemType>) => PagedItemPresenter<ItemType, ServiceType>;
   ItemComponent: (props: { value: ItemType }) => JSX.Element;
 }
 
-export function ItemScroller<ItemType, ServiceType>(
-  props: ItemScrollerProps<ItemType, ServiceType>
-) {
+export function ItemScroller<
+  ItemType extends Status | User,
+  ServiceType extends FollowService | StatusService
+>(props: ItemScrollerProps<ItemType, ServiceType>) {
   const { displayErrorMessage } = useToastListener();
   const [items, setItems] = useState<ItemType[]>([]);
 
