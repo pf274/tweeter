@@ -11,6 +11,7 @@ import { AuthView } from "../../../presenter/generics/AuthPresenter";
 
 interface Props {
   originalUrl?: string;
+  presenter?: LoginPresenter;
 }
 
 const Login = (props: Props) => {
@@ -31,19 +32,28 @@ const Login = (props: Props) => {
     displayErrorMessage,
   };
 
-  const [presenter] = useState(new LoginPresenter(listener));
+  const [presenter] = useState(props.presenter || new LoginPresenter(listener));
 
   const checkSubmitButtonStatus = (): boolean => {
     return presenter.checkStatus(alias, password);
   };
 
   const doLogin = async () => {
-    presenter.doLogin(alias, password, props.originalUrl, rememberMeRef.current);
+    presenter.doLogin(
+      alias,
+      password,
+      props.originalUrl,
+      rememberMeRef.current
+    );
   };
 
   const inputFieldGenerator = () => {
     return (
-      <AuthenticationFields setAlias={setAlias} setPassword={setPassword} addBottomMargin={true} />
+      <AuthenticationFields
+        setAlias={setAlias}
+        setPassword={setPassword}
+        addBottomMargin={true}
+      />
     );
   };
 
