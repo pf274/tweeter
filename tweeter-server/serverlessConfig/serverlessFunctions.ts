@@ -18,7 +18,7 @@ const serverlessFunctions: AWS["functions"] = {
         http: {
           method: "get",
           path: "test",
-          ...withAuthorization,
+          // ...withAuthorization,
         },
       },
     ],

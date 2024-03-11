@@ -3,7 +3,12 @@ import serverlessExecutionRole from "./serverlessConfig/serverlessExecutionRole"
 import serverlessResources from "./serverlessConfig/serverlessResources";
 import serverlessFunctions from "./serverlessConfig/serverlessFunctions";
 
-const validRegions = ["us-east-1"];
+const isDeploying = process.argv.includes("deploy");
+
+if (isDeploying) {
+  require("dotenv").config({ path: `./.env` });
+}
+const validRegions = ["us-east-1", "us-west-2"];
 const validStages = ["development", "staging", "production"];
 if (!process.env.REGION) {
   console.log("Region failed to load.");
@@ -19,10 +24,13 @@ if (!process.env.REGION) {
   process.exit(1);
 } else {
   console.log("Region and environment loaded successfully.");
+  if (isDeploying) {
+    console.log("Deploying to", process.env.REGION, process.env.STAGE);
+  }
 }
 
 const serverlessConfiguration: AWS = {
-  service: "hanai-backend",
+  service: "tweeter-backend",
   frameworkVersion: "3",
   plugins: [
     "serverless-esbuild",
