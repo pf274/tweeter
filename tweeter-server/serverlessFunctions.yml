@@ -1,0 +1,6 @@
+helloWorld:
+  handler: layers/handlers/helloWorld.handler
+  events:
+    - http:
+        path: hello
+        method: get

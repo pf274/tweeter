@@ -1,0 +1,23 @@
+org: peterfullmer33
+app: tweeter
+service: tweeter-server
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+custom:
+  serverlessPluginTypescript:
+    tsConfigFileLocation: "./tsconfig.json"
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+  - serverless-prune-plugin
+
+functions:
+  - ${file(./serverlessFunctions.yml)}
+
+resources:
+  - ${file(./serverlessResources.yml)}

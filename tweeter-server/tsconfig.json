@@ -1,25 +1,18 @@
 {
-  "extends": "./tsconfig.paths.json",
   "compilerOptions": {
-    "preserveConstEnums": true,
-    "strictNullChecks": true,
-    "sourceMap": true,
-    "allowJs": true,
-    "target": "es5",
-    "outDir": ".build",
+    "target": "ES2018",
+    "module": "commonjs",
+    "outDir": "./build",
+    "strict": true,
+    "noImplicitAny": true,
     "moduleResolution": "node",
-    "lib": ["es2015"],
-    "rootDir": "./"
+    "sourceMap": true,
+    "inlineSourceMap": false,
+    "inlineSources": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true
   },
-  "include": ["src/**/*.ts", "serverless.ts", "serverlessConfig/**/*.ts"],
-  "exclude": [
-    "node_modules/**/*",
-    ".serverless/**/*",
-    ".webpack/**/*",
-    "_warmup/**/*",
-    ".vscode/**/*"
-  ],
-  "ts-node": {
-    "require": ["tsconfig-paths/register"]
-  }
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules", "build"]
 }
