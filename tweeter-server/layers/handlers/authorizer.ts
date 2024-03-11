@@ -1,7 +1,4 @@
-import {
-  APIGatewayAuthorizerResult,
-  APIGatewayTokenAuthorizerEvent,
-} from "aws-lambda";
+import { APIGatewayAuthorizerResult, APIGatewayTokenAuthorizerEvent } from "aws-lambda";
 
 export const authorizerHandler = async (
   event: APIGatewayTokenAuthorizerEvent
@@ -16,7 +13,7 @@ export const authorizerHandler = async (
     }
 
     // Example: Verify the token and extract user information
-    const user = await verifyToken(token);
+    const user = await verifyToken();
 
     // Example: Generate an IAM policy for the user
     const policy = generatePolicy(user.id, "Allow", event.methodArn);
@@ -28,7 +25,7 @@ export const authorizerHandler = async (
   }
 };
 
-const verifyToken = async (token: string): Promise<User> => {
+const verifyToken = async (): Promise<User> => {
   // TODO: Implement your token verification logic here
 
   // Example: Verify the token using a JWT library

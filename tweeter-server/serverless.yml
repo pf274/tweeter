@@ -15,6 +15,7 @@ plugins:
   - serverless-offline
   - serverless-plugin-typescript
   - serverless-prune-plugin
+  - serverless-aws-documentation
 
 functions:
   - ${file(./serverlessFunctions.yml)}
