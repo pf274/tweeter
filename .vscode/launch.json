@@ -12,7 +12,9 @@
       "runtimeArgs": ["offline", "start"],
       "cwd": "${workspaceFolder}/tweeter-server",
       "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/tweeter-server/.build/**/*.js"]
+      "outFiles": ["${workspaceFolder}/tweeter-server/.build/**/*.js"],
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart"
     }
   ]
 }
