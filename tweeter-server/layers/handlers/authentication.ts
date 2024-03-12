@@ -13,5 +13,5 @@ async function handleLogin(requestInfo: ApiRequestInfo): Promise<any> {
 
 async function handleRegister(requestInfo: ApiRequestInfo): Promise<any> {
   console.log("Handling register request:", requestInfo);
-  return { message: "Login successful" };
+  return { message: "Register successful" };
 }
