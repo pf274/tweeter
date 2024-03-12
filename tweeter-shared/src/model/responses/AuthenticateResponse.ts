@@ -1,5 +1,7 @@
 import { TweeterResponse } from "./TweeterResponse";
 
-export interface AuthenticateResponse extends TweeterResponse {
-  // TODO: Define the response for each endpoint
+export abstract class AuthenticateResponse extends TweeterResponse {
+  constructor(statusCode: number, body: any) {
+    super({ statusCode, body });
+  }
 }

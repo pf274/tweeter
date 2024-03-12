@@ -33,7 +33,8 @@ const defaultUserInfo: UserInfo = {
   setDisplayedUser: (user) => null,
 };
 
-export const UserInfoContext: Context<UserInfo> = createContext<UserInfo>(defaultUserInfo);
+export const UserInfoContext: Context<UserInfo> =
+  createContext<UserInfo>(defaultUserInfo);
 
 interface Props {
   children: React.ReactNode;
@@ -41,7 +42,7 @@ interface Props {
 
 const UserInfoProvider: React.FC<Props> = ({ children }) => {
   const listener: UserInfoProviderView = {
-    displayErrorMessage: (message: string) => {}, // TODO: this function is not actually used by the UserInfoProviderPresenter.
+    displayErrorMessage: (message: string) => {},
   };
 
   const presenter = new UserInfoProviderPresenter(listener);
