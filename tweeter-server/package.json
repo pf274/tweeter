@@ -1,7 +1,7 @@
 {
   "name": "tweeter-server",
   "version": "0.1.0",
-  "description": "<!-- title: 'AWS Simple HTTP Endpoint example in NodeJS' description: 'This template demonstrates how to make a simple HTTP API with Node.js running on AWS Lambda and API Gateway using the Serverless Framework.' layout: Doc framework: v3 platform: AWS language: nodeJS authorLink: 'https://github.com/serverless' authorName: 'Serverless, inc.' authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4' -->",
+  "description": "The backend service for the CS 340 tweeter clone",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "get-shared": "rd /s /q node_modules\\tweeter-shared && xcopy /E /I /H ..\\tweeter-shared node_modules\\tweeter-shared",
@@ -14,6 +14,7 @@
     "@types/aws-lambda": "^8.10.136",
     "serverless-aws-documentation": "^1.1.0",
     "serverless-offline": "^13.3.3",
+    "serverless-plugin-optimize": "^4.2.1-rc.1",
     "serverless-plugin-typescript": "^2.1.5",
     "serverless-prune-plugin": "^2.0.2",
     "ts-loader": "^9.5.1",

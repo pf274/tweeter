@@ -1,6 +1,200 @@
-helloWorld:
-  handler: layers/handlers/helloWorld.handler
+routeAuthorizer:
+  handler: layers/handlers/authorizer.handler
+authentication:
+  handler: layers/handlers/authentication.handler
+  events:
+    - http: # login
+        path: /auth/login
+        method: post
+        documentation:
+          summary: "Login to the application"
+          description: "Login to the application"
+          queryParams:
+            - name: "alias"
+              description: "The alias of the user"
+              required: true
+            - name: "password"
+              description: "The password of the user"
+              required: true
+          methodResponses:
+            - statusCode: "200"
+              description: "Success"
+            - statusCode: "403"
+              description: "Forbidden"
+            - statusCode: "500"
+              description: "Internal Server Error"
+    - http: # register
+        path: /auth/register
+        method: post
+        documentation:
+          summary: "Register a new user"
+          description: "Register a new user"
+          queryParams:
+            - name: "alias"
+              description: "The alias of the user"
+              required: true
+            - name: "password"
+              description: "The password of the user"
+              required: true
+            - name: "firstName"
+              description: "The first name of the user"
+              required: true
+            - name: "lastName"
+              description: "The last name of the user"
+              required: true
+          requestBody:
+            description: "the image of the user in bytes"
+            required: true
+          methodResponses:
+            - statusCode: "200"
+              description: "Success"
+            - statusCode: "403"
+              description: "Forbidden"
+            - statusCode: "500"
+              description: "Internal Server Error"
+itemload:
+  handler: layers/handlers/itemload.handler
   events:
     - http:
-        path: hello
+        path: /items/followers
         method: get
+        # authorizer: "routeAuthorizer"
+        documentation:
+          summary: "Load a page of followers"
+          description: "Load a page of followers"
+          queryParams:
+            - name: "user"
+              description: "The current user"
+            - name: "pageSize"
+              description: "The number of items to load"
+              required: true
+            - name: "lastItem"
+              description: "The last item loaded"
+              required: false
+    - http:
+        path: /items/feed
+        method: get
+        # authorizer: "routeAuthorizer"
+        documentation:
+          summary: "Load a page of feed items"
+          description: "Load a page of feed items"
+          queryParams:
+            - name: "user"
+              description: "The current user"
+            - name: "pageSize"
+              description: "The number of items to load"
+              required: true
+            - name: "lastItem"
+              description: "The last item loaded"
+              required: false
+    - http:
+        path: /items/stories
+        method: get
+        # authorizer: "routeAuthorizer"
+        documentation:
+          summary: "Load a page of story items"
+          description: "Load a page of story items"
+          queryParams:
+            - name: "user"
+              description: "The current user"
+            - name: "pageSize"
+              description: "The number of items to load"
+              required: true
+            - name: "lastItem"
+              description: "The last item loaded"
+              required: false
+userinfo:
+  handler: layers/handlers/userinfo.handler
+  events:
+    - http:
+        path: /user/get
+        method: get
+        # authorizer: "routeAuthorizer"
+        documentation:
+          summary: "Gets a user by alias"
+          description: "Gets a user by alias"
+          queryParams:
+            - name: "alias"
+              description: "The alias of the user to get"
+              required: true
+    - http:
+        path: /user/followersCount
+        method: get
+        # authorizer: "routeAuthorizer"
+        documentation:
+          summary: "Gets the number of followers for a user"
+          description: "Gets the number of followers for a user"
+          queryParams:
+            - name: "user"
+              description: "The user to get the followers count for"
+              required: true
+    - http:
+        path: /user/followeesCount
+        method: get
+        # authorizer: "routeAuthorizer"
+        documentation:
+          summary: "Gets the number of followees for a user"
+          description: "Gets the number of followees for a user"
+          queryParams:
+            - name: "user"
+              description: "The user to get the followees count for"
+              required: true
+    - http:
+        path: /user/isFollower
+        method: get
+        # authorizer: "routeAuthorizer"
+        documentation:
+          summary: "Checks if a user is a follower of another user"
+          description: "Checks if a user is a follower of another user"
+          queryParams:
+            - name: "user"
+              description: "The user to check if they are a follower"
+              required: true
+            - name: "followee"
+              description: "The user to check if they are being followed"
+              required: true
+    - http:
+        path: /user/follow
+        method: post
+        # authorizer: "routeAuthorizer"
+        documentation:
+          summary: "Follow a user"
+          description: "Follow a user"
+          queryParams:
+            - name: "user"
+              description: "The current user"
+              required: true
+            - name: "followee"
+              description: "The user to follow"
+              required: true
+    - http:
+        path: /user/unfollow
+        method: post
+        # authorizer: "routeAuthorizer"
+        documentation:
+          summary: "Unfollow a user"
+          description: "Unfollow a user"
+          queryParams:
+            - name: "user"
+              description: "The current user"
+              required: true
+            - name: "followee"
+              description: "The user to unfollow"
+              required: true
+status:
+  handler: layers/handlers/status.handler
+  events:
+    - http:
+        path: /status
+        method: post
+        # authorizer: "routeAuthorizer"
+        documentation:
+          summary: "Post a status"
+          description: "Post a status"
+          queryParams:
+            - name: "user"
+              description: "The user posting the status"
+              required: true
+            - name: "status"
+              description: "The status to post"
+              required: true

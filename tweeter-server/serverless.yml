@@ -7,6 +7,9 @@ provider:
   name: aws
   runtime: nodejs18.x
 
+package:
+  individually: true
+
 custom:
   serverlessPluginTypescript:
     tsConfigFileLocation: "./tsconfig.json"
@@ -16,6 +19,7 @@ plugins:
   - serverless-plugin-typescript
   - serverless-prune-plugin
   - serverless-aws-documentation
+  - serverless-plugin-optimize
 
 functions:
   - ${file(./serverlessFunctions.yml)}
