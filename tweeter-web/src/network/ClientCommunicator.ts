@@ -7,6 +7,9 @@ export class ClientCommunicator {
   }
 
   async doRequest(request: TweeterRequest): Promise<TweeterResponse> {
+    if (!request.isValid()) {
+      throw new Error("Invalid API request");
+    }
     const url = new URL(this.SERVER_URL + request.endpoint);
     // add query parameters
     for (const [key, value] of Object.entries(request.queryParameters)) {
@@ -27,17 +30,15 @@ export class ClientCommunicator {
       const response: Response = await fetch(url.toString(), formattedRequest);
       if (response.ok) {
         const data: JSON = await response.json();
-        return {
+        return request.responseInstance({
           statusCode: response.status,
           body: data,
-        };
+        });
       }
       const error = await response.json();
       throw new Error(error.message);
     } catch (err) {
-      throw new Error(
-        `Client communicator doRequest failed:\n${(err as Error).message}`
-      );
+      throw new Error(`Client communicator doRequest failed:\n${(err as Error).message}`);
     }
   }
 }

@@ -1,4 +1,4 @@
-interface TweeterResponseParams {
+export interface TweeterResponseParams {
   statusCode: number;
   body: any;
 }

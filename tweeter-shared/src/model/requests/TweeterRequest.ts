@@ -1,3 +1,5 @@
+import { TweeterResponse, TweeterResponseParams } from "../responses/TweeterResponse";
+
 interface TweeterRequestParams {
   queryParameters: { [key: string]: string } | null;
   pathParameters: { [key: string]: string } | null;
@@ -46,5 +48,9 @@ export abstract class TweeterRequest {
    */
   abstract isValid(): boolean;
 
-  abstract responseClassName(): string;
+  public get responseInstance(): (params: TweeterResponseParams) => TweeterResponse {
+    return this.responseBuilder;
+  }
+
+  protected abstract responseBuilder(params: TweeterResponseParams): TweeterResponse;
 }

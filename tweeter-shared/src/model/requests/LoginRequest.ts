@@ -1,3 +1,5 @@
+import { LoginResponse } from "../responses/LoginResponse";
+import { TweeterResponse, TweeterResponseParams } from "../responses/TweeterResponse";
 import { TweeterRequest } from "./TweeterRequest";
 
 export class LoginRequest extends TweeterRequest {
@@ -15,7 +17,7 @@ export class LoginRequest extends TweeterRequest {
     return this.body.username.length > 0 && this.body.password.length > 0;
   }
 
-  responseClassName(): string {
-    return "AuthenticateResponse";
+  protected responseBuilder(params: TweeterResponseParams): TweeterResponse {
+    return new LoginResponse(params.statusCode, params.body);
   }
 }
