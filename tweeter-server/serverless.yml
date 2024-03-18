@@ -25,4 +25,4 @@ functions:
   - ${file(./serverlessFunctions.yml)}
 
 resources:
-  - ${file(./serverlessResources.yml)}
+  - ${file(./resources/dynamodb.yml)}

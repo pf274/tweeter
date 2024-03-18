@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Serverless Offline",
       "runtimeExecutable": "serverless",
-      "runtimeArgs": ["offline", "start"],
+      "runtimeArgs": ["offline", "start", "--noTimeout"],
       "cwd": "${workspaceFolder}/tweeter-server",
       "sourceMaps": true,
       "outFiles": ["${workspaceFolder}/tweeter-server/.build/**/*.js"],

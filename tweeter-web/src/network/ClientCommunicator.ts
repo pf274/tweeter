@@ -38,7 +38,9 @@ export class ClientCommunicator {
       const error = await response.json();
       throw new Error(error.message);
     } catch (err) {
-      throw new Error(`Client communicator doRequest failed:\n${(err as Error).message}`);
+      throw new Error(
+        `Client communicator doRequest failed:\n${(err as Error).message}`
+      );
     }
   }
 }

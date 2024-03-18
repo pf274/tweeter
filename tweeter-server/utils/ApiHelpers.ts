@@ -1,4 +1,8 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from "aws-lambda";
+import {
+  APIGatewayProxyEvent,
+  APIGatewayProxyResult,
+  Context,
+} from "aws-lambda";
 import { ApiRequestInfo, ApiRoute, methodType } from "../types/ApiRoutes";
 import { ServiceError } from "./ServiceError";
 
@@ -16,8 +20,14 @@ export function getRequestInfo(event: APIGatewayProxyEvent): ApiRequestInfo {
 export function basicApiHandler(
   handlerName: string,
   routes: ApiRoute[]
-): (event: APIGatewayProxyEvent, context: Context) => Promise<APIGatewayProxyResult> {
-  return async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
+): (
+  event: APIGatewayProxyEvent,
+  context: Context
+) => Promise<APIGatewayProxyResult> {
+  return async (
+    event: any,
+    context: Context
+  ): Promise<APIGatewayProxyResult> => {
     console.log(`Handler: ${handlerName}`);
     console.log(`Event: ${JSON.stringify(event, null, 2)}`);
     console.log(`Context: ${JSON.stringify(context, null, 2)}`);
@@ -49,7 +59,9 @@ export function basicApiHandler(
         console.error("Internal server error:", error);
         return {
           statusCode: 500,
-          body: JSON.stringify({ message: `Internal server error: ${(error as Error).message}` }),
+          body: JSON.stringify({
+            message: `Internal server error: ${(error as Error).message}`,
+          }),
         };
       }
     }
