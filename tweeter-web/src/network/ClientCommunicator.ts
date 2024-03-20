@@ -1,4 +1,4 @@
-import { TweeterRequest, TweeterResponse } from "tweeter-shared";
+import { ErrorResponse, TweeterRequest, TweeterResponse } from "tweeter-shared";
 
 type ApiRequest = {
   method: string;
@@ -19,7 +19,7 @@ export class ClientCommunicator {
     request: RequestType,
     endpoint: string,
     method: "GET" | "POST" | "DELETE"
-  ): Promise<ResponseType> {
+  ): Promise<ResponseType | ErrorResponse> {
     const url = new URL(this.SERVER_URL + endpoint);
     const formattedRequest: ApiRequest = {
       method,
@@ -36,8 +36,12 @@ export class ClientCommunicator {
         const data: ResponseType = await response.json();
         return data;
       } else {
-        const error = await response.json();
-        throw new Error(error.message);
+        const data = await response.json();
+        const error: ErrorResponse = {
+          statusCode: response.status,
+          message: data.message || `Unknown error: ${JSON.stringify(response)}`,
+        };
+        return error;
       }
     } catch (err) {
       throw new Error(
