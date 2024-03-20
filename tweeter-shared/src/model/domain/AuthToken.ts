@@ -1,4 +1,10 @@
 import { v4 as uuid } from "uuid";
+
+export interface AuthTokenDTO {
+  token: string;
+  timestamp: number;
+}
+
 export class AuthToken {
   private _token: string;
   private _timestamp: number;
@@ -10,15 +16,18 @@ export class AuthToken {
   }
 
   private static generateToken(): string {
-    try{
+    try {
       return uuid().toString();
-    } catch(error) {
+    } catch (error) {
       // UUID not available. Generating a random string. Making it 64 characters to reduce the liklihood of a duplicate
-      let result = '';
-      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$^*()-+';
+      let result = "";
+      const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$^*()-+";
       const charactersLength = characters.length;
       for (let i = 0; i < 64; i++) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        result += characters.charAt(
+          Math.floor(Math.random() * charactersLength)
+        );
       }
 
       return result;
@@ -57,5 +66,16 @@ export class AuthToken {
 
   public toJson(): string {
     return JSON.stringify(this);
+  }
+
+  public static fromDTO(dto: AuthTokenDTO): AuthToken {
+    return new AuthToken(dto.token, dto.timestamp);
+  }
+
+  public get dto(): AuthTokenDTO {
+    return {
+      token: this._token,
+      timestamp: this._timestamp,
+    };
   }
 }

@@ -1,6 +1,12 @@
 import { PostSegment, Type } from "./PostSegment";
-import { User } from "./User";
+import { User, UserDTO } from "./User";
 import moment from "moment";
+
+export interface StatusDTO {
+  post: string;
+  user: UserDTO;
+  timestamp: number;
+}
 
 export class Status {
   private _post: string;
@@ -273,5 +279,17 @@ export class Status {
 
   public toJson(): string {
     return JSON.stringify(this);
+  }
+
+  public static fromDTO(dto: StatusDTO): Status {
+    return new Status(dto.post, User.fromDTO(dto.user), dto.timestamp);
+  }
+
+  public get dto(): StatusDTO {
+    return {
+      post: this._post,
+      user: this._user.dto,
+      timestamp: this._timestamp,
+    };
   }
 }

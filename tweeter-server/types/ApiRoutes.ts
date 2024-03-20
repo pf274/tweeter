@@ -16,7 +16,7 @@ export enum methodType {
 export type ApiRequestInfo = {
   queryParameters: { [key: string]: any };
   pathParameters: { [key: string]: any };
-  body: JSON;
+  body: string;
 };
 
 export type HandlerType = (requestInfo: ApiRequestInfo) => Promise<any>;
@@ -32,9 +32,14 @@ export class ApiRoute {
     this._handler = handler;
   }
 
-  handle(event: APIGatewayProxyEvent): Promise<any> {
+  async handle(event: APIGatewayProxyEvent): Promise<string> {
     const requestInfo = getRequestInfo(event);
-    return this._handler(requestInfo);
+    const response = await this._handler(requestInfo);
+    if (typeof response === "string") {
+      return response;
+    } else {
+      return JSON.stringify(response);
+    }
   }
 
   matches(path: string, method: methodType) {

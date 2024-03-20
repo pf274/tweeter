@@ -1,3 +1,10 @@
+export interface UserDTO {
+  firstName: string;
+  lastName: string;
+  alias: string;
+  imageURL: string;
+}
+
 export class User {
   private _firstName: string;
   private _lastName: string;
@@ -77,5 +84,18 @@ export class User {
 
   public toJson(): string {
     return JSON.stringify(this);
+  }
+
+  public static fromDTO(dto: UserDTO): User {
+    return new User(dto.firstName, dto.lastName, dto.alias, dto.imageURL);
+  }
+
+  public get dto(): UserDTO {
+    return {
+      firstName: this._firstName,
+      lastName: this._lastName,
+      alias: this._alias,
+      imageURL: this._imageUrl,
+    };
   }
 }

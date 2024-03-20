@@ -1,42 +1,44 @@
 import { TweeterRequest, TweeterResponse } from "tweeter-shared";
 
+type ApiRequest = {
+  method: string;
+  headers: Headers;
+  body?: string;
+};
+
 export class ClientCommunicator {
   private SERVER_URL: string;
   constructor(serverUrl: string) {
     this.SERVER_URL = serverUrl;
   }
 
-  async doRequest(request: TweeterRequest): Promise<TweeterResponse> {
-    if (!request.isValid()) {
-      throw new Error("Invalid API request");
-    }
-    const url = new URL(this.SERVER_URL + request.endpoint);
-    // add query parameters
-    for (const [key, value] of Object.entries(request.queryParameters)) {
-      url.searchParams.append(key, value);
-    }
-    // add path parameters
-    for (const [key, value] of Object.entries(request.pathParameters)) {
-      url.pathname = url.pathname.replace(`{${key}}`, value);
-    }
-    const formattedRequest = {
-      method: request.method,
+  async doRequest<
+    RequestType extends TweeterRequest,
+    ResponseType extends TweeterResponse
+  >(
+    request: RequestType,
+    endpoint: string,
+    method: "GET" | "POST" | "DELETE"
+  ): Promise<ResponseType> {
+    const url = new URL(this.SERVER_URL + endpoint);
+    const formattedRequest: ApiRequest = {
+      method,
       headers: new Headers({
         "Content-Type": "application/json",
       }),
-      body: JSON.stringify(request.body),
     };
+    if (method != "GET") {
+      formattedRequest.body = JSON.stringify(request);
+    }
     try {
       const response: Response = await fetch(url.toString(), formattedRequest);
       if (response.ok) {
-        const data: JSON = await response.json();
-        return request.responseInstance({
-          statusCode: response.status,
-          body: data,
-        });
+        const data: ResponseType = await response.json();
+        return data;
+      } else {
+        const error = await response.json();
+        throw new Error(error.message);
       }
-      const error = await response.json();
-      throw new Error(error.message);
     } catch (err) {
       throw new Error(
         `Client communicator doRequest failed:\n${(err as Error).message}`

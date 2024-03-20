@@ -5,11 +5,12 @@ import {
 } from "aws-lambda";
 import { ApiRequestInfo, ApiRoute, methodType } from "../types/ApiRoutes";
 import { ServiceError } from "./ServiceError";
+import { TweeterRequest } from "tweeter-shared";
 
 export function getRequestInfo(event: APIGatewayProxyEvent): ApiRequestInfo {
   const queryParameters = event.queryStringParameters || {};
   const pathParameters = event.pathParameters || {};
-  const body = JSON.parse(event.body || "{}");
+  const body = event.body || "{}";
   return {
     queryParameters,
     pathParameters,
@@ -46,7 +47,7 @@ export function basicApiHandler(
       console.log("Response:", response);
       return {
         statusCode: 200,
-        body: JSON.stringify(response),
+        body: response,
       };
     } catch (error) {
       if (error instanceof ServiceError) {

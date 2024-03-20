@@ -1,6 +1,6 @@
 import { FakeData } from "../../utils/FakeData";
 import { ServiceError } from "../../utils/ServiceError";
-import { User, AuthToken } from "tweeter-shared";
+import { UserDTO, AuthTokenDTO } from "tweeter-shared";
 
 export class AuthenticationService {
   static async register(
@@ -9,7 +9,7 @@ export class AuthenticationService {
     firstName: string,
     lastName: string,
     imageBytes: Uint8Array
-  ) {
+  ): Promise<{ user: UserDTO; authToken: AuthTokenDTO }> {
     let user = FakeData.instance.firstUser;
     let authToken = FakeData.instance.authToken;
 
@@ -17,10 +17,13 @@ export class AuthenticationService {
       throw new ServiceError(400, "Invalid registration");
     }
 
-    return [user, authToken];
+    return { user: user.dto, authToken: authToken.dto };
   }
 
-  static async login(alias: string, password: string) {
+  static async login(
+    alias: string,
+    password: string
+  ): Promise<{ user: UserDTO; authToken: AuthTokenDTO }> {
     const user = FakeData.instance.firstUser;
     let authToken = FakeData.instance.authToken;
 
@@ -28,6 +31,6 @@ export class AuthenticationService {
       throw new Error("Invalid alias or password");
     }
 
-    return [user, authToken];
+    return { user: user.dto, authToken: authToken.dto };
   }
 }
