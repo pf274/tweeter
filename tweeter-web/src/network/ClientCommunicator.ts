@@ -19,7 +19,7 @@ export class ClientCommunicator {
     request: RequestType,
     endpoint: string,
     method: "GET" | "POST" | "DELETE"
-  ): Promise<ResponseType | ErrorResponse> {
+  ): Promise<ResponseType> {
     const url = new URL(this.SERVER_URL + endpoint);
     const formattedRequest: ApiRequest = {
       method,
@@ -41,7 +41,7 @@ export class ClientCommunicator {
           statusCode: response.status,
           message: data.message || `Unknown error: ${JSON.stringify(response)}`,
         };
-        return error;
+        throw new Error(JSON.stringify(error)); // TODO: replace with service error
       }
     } catch (err) {
       throw new Error(

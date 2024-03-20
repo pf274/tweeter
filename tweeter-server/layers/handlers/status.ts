@@ -12,6 +12,9 @@ async function handlePostStatus(
 ): Promise<PostStatusResponse> {
   const request: PostStatusRequest = JSON.parse(requestInfo.body);
   console.log("Handling post status request:", request);
-  await StatusService.postStatus(request.authToken, request.status);
-  return { successful: true };
+  const response = await StatusService.postStatus(
+    request.authToken,
+    request.status
+  );
+  return response;
 }
