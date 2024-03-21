@@ -1,9 +1,9 @@
-import { AuthTokenDTO, StatusDTO } from "tweeter-shared";
+import { AuthToken, Status } from "tweeter-shared";
 
 export class StatusService {
   static async postStatus(
-    authToken: AuthTokenDTO,
-    status: StatusDTO
+    authToken: AuthToken,
+    status: Status
   ): Promise<{ successful: boolean }> {
     await new Promise((f) => setTimeout(f, 2000));
     return { successful: true };

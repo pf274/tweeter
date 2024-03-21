@@ -10,6 +10,9 @@ import {
   GetFolloweesResponse,
   GetStoriesRequest,
   GetStoriesResponse,
+  AuthToken,
+  User,
+  Status,
 } from "tweeter-shared";
 
 module.exports.handler = basicApiHandler("itemload", [
@@ -25,12 +28,15 @@ async function handleGetFollowers(
   const request: GetFollowersRequest = JSON.parse(requestInfo.body);
   console.log("Handling get followers request:", request);
   const response = await ItemLoadService.loadMoreFollowers(
-    request.authToken,
-    request.user,
+    AuthToken.fromDTO(request.authToken),
+    User.fromDTO(request.user),
     request.pageSize,
-    request.lastItem
+    User.fromDTO(request.lastItem)
   );
-  return response;
+  return {
+    users: response.users.map((user) => user.dto),
+    hasMore: response.hasMore,
+  };
 }
 
 async function handleGetFollowees(
@@ -39,12 +45,15 @@ async function handleGetFollowees(
   const request: GetFolloweesRequest = JSON.parse(requestInfo.body);
   console.log("Handling get followees request:", request);
   const response = await ItemLoadService.loadMoreFollowees(
-    request.authToken,
-    request.user,
+    AuthToken.fromDTO(request.authToken),
+    User.fromDTO(request.user),
     request.pageSize,
-    request.lastItem
+    User.fromDTO(request.lastItem)
   );
-  return response;
+  return {
+    users: response.users.map((user) => user.dto),
+    hasMore: response.hasMore,
+  };
 }
 
 async function handleGetFeed(
@@ -53,12 +62,15 @@ async function handleGetFeed(
   const request: GetFeedRequest = JSON.parse(requestInfo.body);
   console.log("Handling get feed request:", request);
   const response = await ItemLoadService.loadMoreFeedItems(
-    request.authToken,
-    request.user,
+    AuthToken.fromDTO(request.authToken),
+    User.fromDTO(request.user),
     request.pageSize,
-    request.lastItem
+    request.lastItem ? Status.fromDTO(request.lastItem) : null
   );
-  return response;
+  return {
+    statusItems: response.statusItems.map((status) => status.dto),
+    hasMore: response.hasMore,
+  };
 }
 
 async function handleGetStories(
@@ -67,10 +79,13 @@ async function handleGetStories(
   const request: GetStoriesRequest = JSON.parse(requestInfo.body);
   console.log("Handling get stories request:", request);
   const response = await ItemLoadService.loadMoreStoryItems(
-    request.authToken,
-    request.user,
+    AuthToken.fromDTO(request.authToken),
+    User.fromDTO(request.user),
     request.pageSize,
-    request.lastItem
+    request.lastItem ? Status.fromDTO(request.lastItem) : null
   );
-  return response;
+  return {
+    statusItems: response.statusItems.map((status) => status.dto),
+    hasMore: response.hasMore,
+  };
 }

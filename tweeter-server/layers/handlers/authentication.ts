@@ -22,7 +22,10 @@ async function handleLogin(
     request.username,
     request.password
   );
-  return response;
+  return {
+    authToken: response.authToken.dto,
+    user: response.user.dto,
+  };
 }
 
 async function handleRegister(
@@ -37,5 +40,8 @@ async function handleRegister(
     request.lastName,
     request.imageBytes
   );
-  return response;
+  return {
+    authToken: response.authToken.dto,
+    user: response.user.dto,
+  };
 }

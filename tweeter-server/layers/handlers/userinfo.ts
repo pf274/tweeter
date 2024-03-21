@@ -14,6 +14,8 @@ import {
   GetUserByAliasResponse,
   UnfollowRequest,
   UnfollowResponse,
+  AuthToken,
+  User,
 } from "tweeter-shared";
 
 module.exports.handler = basicApiHandler("userinfo", [
@@ -31,10 +33,12 @@ async function handleGetUserByAlias(
   const request: GetUserByAliasRequest = JSON.parse(requestInfo.body);
   console.log("Handling get user by alias request:", request);
   const response = await UserInfoService.getUserByAlias(
-    request.authToken,
+    AuthToken.fromDTO(request.authToken),
     request.alias
   );
-  return response;
+  return {
+    user: response.user ? response.user?.dto : null,
+  };
 }
 
 async function handleGetFollowersCount(
@@ -43,10 +47,12 @@ async function handleGetFollowersCount(
   const request: GetFollowersCountRequest = JSON.parse(requestInfo.body);
   console.log("Handling get followers count request:", request);
   const response = await UserInfoService.getFollowersCount(
-    request.authToken,
-    request.user
+    AuthToken.fromDTO(request.authToken),
+    User.fromDTO(request.user)
   );
-  return response;
+  return {
+    count: response.count,
+  };
 }
 
 async function handleGetFolloweesCount(
@@ -55,8 +61,8 @@ async function handleGetFolloweesCount(
   const request: GetFolloweesCountRequest = JSON.parse(requestInfo.body);
   console.log("Handling get followees count request:", request);
   const response = await UserInfoService.getFolloweesCount(
-    request.authToken,
-    request.user
+    AuthToken.fromDTO(request.authToken),
+    User.fromDTO(request.user)
   );
   return response;
 }
@@ -67,11 +73,13 @@ async function handleIsFollower(
   const request: GetIsFollowerRequest = JSON.parse(requestInfo.body);
   console.log("Handling is follower request:", request);
   const response = await UserInfoService.getIsFollowerStatus(
-    request.authToken,
-    request.user,
-    request.selectedUser
+    AuthToken.fromDTO(request.authToken),
+    User.fromDTO(request.user),
+    User.fromDTO(request.selectedUser)
   );
-  return response;
+  return {
+    isFollower: response.isFollower,
+  };
 }
 
 async function handleFollowUser(
@@ -80,8 +88,8 @@ async function handleFollowUser(
   const request: FollowRequest = JSON.parse(requestInfo.body);
   console.log("Handling follow user request:", request);
   const response = await UserInfoService.follow(
-    request.authToken,
-    request.userToFollow
+    AuthToken.fromDTO(request.authToken),
+    User.fromDTO(request.userToFollow)
   );
   return response;
 }
@@ -92,8 +100,8 @@ async function handleUnfollowUser(
   const request: UnfollowRequest = JSON.parse(requestInfo.body);
   console.log("Handling unfollow user request:", request);
   const response = await UserInfoService.unfollow(
-    request.authToken,
-    request.userToUnfollow
+    AuthToken.fromDTO(request.authToken),
+    User.fromDTO(request.userToUnfollow)
   );
   return response;
 }

@@ -1,49 +1,44 @@
 import { AuthToken, User } from "tweeter-shared";
 import { FakeData } from "../../utils/FakeData";
-import { AuthTokenDTO, UserDTO } from "tweeter-shared";
 
 export class UserInfoService {
   public static async getUserByAlias(
-    authToken: AuthTokenDTO,
+    authToken: AuthToken,
     alias: string
-  ): Promise<{ user: UserDTO | null }> {
+  ): Promise<{ user: User | null }> {
     const user = FakeData.instance.findUserByAlias(alias);
-    if (user) {
-      return { user: user.dto };
-    } else {
-      return { user: null };
-    }
+    return { user };
   }
 
   public static async getFollowersCount(
-    authToken: AuthTokenDTO,
-    user: UserDTO
+    authToken: AuthToken,
+    user: User
   ): Promise<{ count: number }> {
     // TODO: Replace with the result of calling server
-    const count = await FakeData.instance.getFollowersCount(User.fromDTO(user));
+    const count = await FakeData.instance.getFollowersCount(user);
     return { count };
   }
 
   public static async getFolloweesCount(
-    authToken: AuthTokenDTO,
-    user: UserDTO
+    authToken: AuthToken,
+    user: User
   ): Promise<{ count: number }> {
-    const count = await FakeData.instance.getFolloweesCount(User.fromDTO(user));
+    const count = await FakeData.instance.getFolloweesCount(user);
     return { count };
   }
 
   public static async getIsFollowerStatus(
-    authToken: AuthTokenDTO,
-    user: UserDTO,
-    selectedUser: UserDTO
+    authToken: AuthToken,
+    user: User,
+    selectedUser: User
   ): Promise<{ isFollower: boolean }> {
     const isFollower = FakeData.instance.isFollower();
     return { isFollower };
   }
 
   public static async follow(
-    authToken: AuthTokenDTO,
-    userToFollow: UserDTO
+    authToken: AuthToken,
+    userToFollow: User
   ): Promise<{ followersCount: number; followeesCount: number }> {
     const { count: followersCount } = await this.getFollowersCount(
       authToken,
@@ -58,8 +53,8 @@ export class UserInfoService {
   }
 
   public static async unfollow(
-    authToken: AuthTokenDTO,
-    userToUnfollow: UserDTO
+    authToken: AuthToken,
+    userToUnfollow: User
   ): Promise<{ followersCount: number; followeesCount: number }> {
     const { count: followersCount } = await this.getFollowersCount(
       authToken,
