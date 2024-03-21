@@ -5,5 +5,5 @@ export interface RegisterRequest extends TweeterRequest {
   readonly password: string;
   readonly firstName: string;
   readonly lastName: string;
-  readonly imageBytes: Uint8Array;
+  readonly imageStringBase64: string;
 }

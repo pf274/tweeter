@@ -1,5 +1,11 @@
 import { Buffer } from "buffer";
-import { AuthToken, FakeData, User } from "tweeter-shared";
+import {
+  AuthToken,
+  LoginResponse,
+  RegisterResponse,
+  User,
+} from "tweeter-shared";
+import { ServerFacade } from "../../network/ServerFacade";
 
 export class AuthenticationService {
   public async register(
@@ -8,34 +14,36 @@ export class AuthenticationService {
     firstName: string,
     lastName: string,
     imageBytes: Uint8Array
-  ): Promise<[User, AuthToken]> {
-    // Implementation not shown
-    // Not neded now, but will be needed when you make the request to the server in milestone 3
-    let imageStringBase64: string = Buffer.from(imageBytes).toString("base64");
+  ): Promise<[User | null, AuthToken | null]> {
+    const imageStringBase64 = Buffer.from(imageBytes).toString("base64");
 
-    // TODO: Replace with the result of calling the server
-    let user = FakeData.instance.firstUser;
-    let authToken = FakeData.instance.authToken;
+    const response: RegisterResponse = await ServerFacade.register({
+      alias,
+      password,
+      firstName,
+      lastName,
+      imageStringBase64,
+    });
 
-    if (user === null) {
-      throw new Error("Invalid registration");
-    }
-
-    return [user, authToken];
+    return [
+      response.user ? User.fromDTO(response.user) : null,
+      response.authToken ? AuthToken.fromDTO(response.authToken) : null,
+    ];
   }
 
   public async login(
     alias: string,
     password: string
-  ): Promise<[User, AuthToken]> {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
+  ): Promise<[User | null, AuthToken | null]> {
+    const response: LoginResponse = await ServerFacade.login({
+      username: alias,
+      password,
+    });
 
-    if (user === null) {
-      throw new Error("Invalid alias or password");
-    }
-
-    return [user, FakeData.instance.authToken];
+    return [
+      response.user ? User.fromDTO(response.user) : null,
+      response.authToken ? AuthToken.fromDTO(response.authToken) : null,
+    ];
   }
 
   public async logout(authToken: AuthToken): Promise<void> {

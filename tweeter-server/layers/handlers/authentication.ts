@@ -33,12 +33,16 @@ async function handleRegister(
 ): Promise<RegisterResponse> {
   const request: RegisterRequest = JSON.parse(requestInfo.body);
   console.log("Handling register request:", request);
+  const imageBytes: Uint8Array = Buffer.from(
+    request.imageStringBase64,
+    "base64"
+  );
   const response = await AuthenticationService.register(
     request.alias,
     request.password,
     request.firstName,
     request.lastName,
-    request.imageBytes
+    imageBytes
   );
   return {
     authToken: response.authToken.dto,
