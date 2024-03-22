@@ -18,7 +18,7 @@ custom:
     version: "1"
     title: "Tweeter API"
     description: "This is my tweeter API"
-    models: {}
+    models: []
 
 plugins:
   - serverless-offline

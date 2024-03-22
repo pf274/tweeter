@@ -38,6 +38,10 @@ export function basicApiHandler(
       console.log("Route not found");
       return {
         statusCode: 404,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Credentials": true,
+        },
         body: JSON.stringify({ message: "Route not found" }),
       };
     }
@@ -46,6 +50,10 @@ export function basicApiHandler(
       console.log("Response:", response);
       return {
         statusCode: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Credentials": true,
+        },
         body: response,
       };
     } catch (error) {
@@ -53,12 +61,20 @@ export function basicApiHandler(
         console.log("Service error:", error);
         return {
           statusCode: error.statusCode,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": true,
+          },
           body: JSON.stringify({ message: error.message }),
         };
       } else {
         console.error("Internal server error:", error);
         return {
           statusCode: 500,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": true,
+          },
           body: JSON.stringify({
             message: `Internal server error: ${(error as Error).message}`,
           }),
