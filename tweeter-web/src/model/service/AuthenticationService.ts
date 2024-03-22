@@ -2,6 +2,7 @@ import { Buffer } from "buffer";
 import {
   AuthToken,
   LoginResponse,
+  LogoutRequest,
   RegisterResponse,
   User,
 } from "tweeter-shared";
@@ -48,7 +49,9 @@ export class AuthenticationService {
 
   public async logout(authToken: AuthToken): Promise<void> {
     // Pause so we can see the logging out message.
-    // TODO: Delete when the call to the server is implemented.
-    await new Promise((res) => setTimeout(res, 1000));
+    const logoutRequest: LogoutRequest = {
+      authToken: authToken.dto,
+    };
+    await ServerFacade.logout(logoutRequest);
   }
 }

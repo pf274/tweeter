@@ -24,6 +24,7 @@ export type { GetIsFollowerRequest } from "./model/requests/GetIsFollowerRequest
 export type { GetStoriesRequest } from "./model/requests/GetStoriesRequest";
 export type { GetUserByAliasRequest } from "./model/requests/GetUserByAliasRequest";
 export type { PostStatusRequest } from "./model/requests/PostStatusRequest";
+export type { LogoutRequest } from "./model/requests/LogoutRequest";
 
 // responses
 export type { TweeterResponse } from "./model/responses/TweeterResponse";
@@ -41,7 +42,7 @@ export type { GetUserByAliasResponse } from "./model/responses/GetUserByAliasRes
 export type { PostStatusResponse } from "./model/responses/PostStatusResponse";
 export type { RegisterResponse } from "./model/responses/RegisterResponse";
 export type { UnfollowResponse } from "./model/responses/UnfollowResponse";
+export type { LogoutResponse } from "./model/responses/LogoutResponse";
 
 // All classes that should be avaialble to other modules need to exported here. export * does not work when
 // uploading to lambda. Instead we have to list each export.
-export { FakeData } from "./util/FakeData";

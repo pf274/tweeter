@@ -3,6 +3,8 @@ import {
   LoginResponse,
   RegisterRequest,
   RegisterResponse,
+  LogoutRequest,
+  LogoutResponse,
 } from "tweeter-shared";
 import { ApiRequestInfo, ApiRoute } from "../../types/ApiRoutes";
 import { basicApiHandler } from "../../utils/ApiHelpers";
@@ -11,6 +13,7 @@ import { AuthenticationService } from "../services/authenticationService";
 module.exports.handler = basicApiHandler("authentication", [
   ApiRoute.post("/auth/login", handleLogin),
   ApiRoute.post("/auth/register", handleRegister),
+  ApiRoute.post("/auth/logout", handleLogout),
 ]);
 
 async function handleLogin(
@@ -48,4 +51,13 @@ async function handleRegister(
     authToken: response.authToken.dto,
     user: response.user.dto,
   };
+}
+
+async function handleLogout(
+  requestInfo: ApiRequestInfo
+): Promise<LogoutResponse> {
+  console.log("Handling logout request:", requestInfo);
+  const request: LogoutRequest = JSON.parse(requestInfo.body);
+  // await AuthenticationService.logout(requestInfo.authToken);
+  return { successful: true };
 }

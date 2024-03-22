@@ -17,7 +17,7 @@ export class FollowService {
       authToken: authToken.dto,
       user: user.dto,
       pageSize: pageSize,
-      lastItem: lastItem!.dto,
+      lastItem: lastItem ? lastItem.dto : null,
     });
     return [
       response.users.map((userDTO) => User.fromDTO(userDTO)),
@@ -35,7 +35,7 @@ export class FollowService {
       authToken: authToken.dto,
       user: user.dto,
       pageSize: pageSize,
-      lastItem: lastItem!.dto,
+      lastItem: lastItem ? lastItem.dto : null,
     });
     return [
       response.users.map((userDTO) => User.fromDTO(userDTO)),

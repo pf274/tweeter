@@ -17,8 +17,14 @@ import {
   GetUserByAliasResponse,
   LoginRequest,
   LoginResponse,
+  LogoutRequest,
+  LogoutResponse,
+  PostStatusRequest,
+  PostStatusResponse,
   RegisterRequest,
   RegisterResponse,
+  UnfollowRequest,
+  UnfollowResponse,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
@@ -30,6 +36,9 @@ export class ServerFacade {
   }
   static async register(request: RegisterRequest): Promise<RegisterResponse> {
     return this.clientCommunicator.doRequest(request, "/auth/register", "POST");
+  }
+  static async logout(request: LogoutRequest): Promise<LogoutResponse> {
+    return this.clientCommunicator.doRequest(request, "/auth/logout", "POST");
   }
   static async getFollowers(
     request: GetFollowersRequest
@@ -48,10 +57,6 @@ export class ServerFacade {
       "/items/followees",
       "GET"
     );
-  }
-  static async logout(): Promise<void> {
-    // Pause so we can see the logging out message.
-    // TODO: Figure out what this is supposed to do.
   }
   static async getFeedItems(request: GetFeedRequest): Promise<GetFeedResponse> {
     return this.clientCommunicator.doRequest(request, "/items/feed", "GET");
@@ -96,7 +101,12 @@ export class ServerFacade {
   static async follow(request: FollowRequest): Promise<FollowResponse> {
     return this.clientCommunicator.doRequest(request, "/user/follow", "POST");
   }
-  static async unfollow(request: FollowRequest): Promise<FollowResponse> {
+  static async unfollow(request: UnfollowRequest): Promise<UnfollowResponse> {
     return this.clientCommunicator.doRequest(request, "/user/unfollow", "POST");
+  }
+  static async postStatus(
+    request: PostStatusRequest
+  ): Promise<PostStatusResponse> {
+    return this.clientCommunicator.doRequest(request, "/status", "POST");
   }
 }

@@ -1,4 +1,11 @@
-import { AuthToken, FakeData, Status, User } from "tweeter-shared";
+import {
+  AuthToken,
+  PostStatusRequest,
+  GetFeedRequest,
+  Status,
+  User,
+} from "tweeter-shared";
+import { ServerFacade } from "../../network/ServerFacade";
 
 export class StatusService {
   async loadMoreFeedItems(
@@ -7,8 +14,17 @@ export class StatusService {
     pageSize: number,
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+    const request: GetFeedRequest = {
+      authToken: authToken.dto,
+      user: user.dto,
+      pageSize: pageSize,
+      lastItem: lastItem ? lastItem.dto : null,
+    };
+    const response = await ServerFacade.getFeedItems(request);
+    const statuses = response.statusItems.map((statusItem) =>
+      Status.fromDTO(statusItem)
+    );
+    return [statuses, response.hasMore];
   }
   async loadMoreStoryItems(
     authToken: AuthToken,
@@ -16,12 +32,24 @@ export class StatusService {
     pageSize: number,
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+    const request: GetFeedRequest = {
+      authToken: authToken.dto,
+      user: user.dto,
+      pageSize: pageSize,
+      lastItem: lastItem ? lastItem.dto : null,
+    };
+    const response = await ServerFacade.getStoryItems(request);
+    const statuses = response.statusItems.map((statusItem) =>
+      Status.fromDTO(statusItem)
+    );
+    return [statuses, response.hasMore];
   }
 
   async postStatus(authToken: AuthToken, status: Status): Promise<void> {
-    // TODO: Call the server to post the status
-    await new Promise((f) => setTimeout(f, 2000));
+    const postRequest: PostStatusRequest = {
+      authToken: authToken.dto,
+      status: status.dto,
+    };
+    const postResponse = await ServerFacade.postStatus(postRequest);
   }
 }

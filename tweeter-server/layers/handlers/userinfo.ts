@@ -15,7 +15,9 @@ import {
   UnfollowRequest,
   UnfollowResponse,
   AuthToken,
+  AuthTokenDTO,
   User,
+  UserDTO,
 } from "tweeter-shared";
 
 module.exports.handler = basicApiHandler("userinfo", [
@@ -30,7 +32,12 @@ module.exports.handler = basicApiHandler("userinfo", [
 async function handleGetUserByAlias(
   requestInfo: ApiRequestInfo
 ): Promise<GetUserByAliasResponse> {
-  const request: GetUserByAliasRequest = JSON.parse(requestInfo.body);
+  const request: GetUserByAliasRequest = {
+    authToken: JSON.parse(
+      requestInfo.queryParameters.authToken
+    ) as AuthTokenDTO,
+    alias: requestInfo.queryParameters.alias,
+  };
   console.log("Handling get user by alias request:", request);
   const response = await UserInfoService.getUserByAlias(
     AuthToken.fromDTO(request.authToken),
@@ -44,7 +51,12 @@ async function handleGetUserByAlias(
 async function handleGetFollowersCount(
   requestInfo: ApiRequestInfo
 ): Promise<GetFollowersCountResponse> {
-  const request: GetFollowersCountRequest = JSON.parse(requestInfo.body);
+  const request: GetFollowersCountRequest = {
+    authToken: JSON.parse(
+      requestInfo.queryParameters.authToken
+    ) as AuthTokenDTO,
+    user: JSON.parse(requestInfo.queryParameters.user) as UserDTO,
+  };
   console.log("Handling get followers count request:", request);
   const response = await UserInfoService.getFollowersCount(
     AuthToken.fromDTO(request.authToken),
@@ -58,7 +70,12 @@ async function handleGetFollowersCount(
 async function handleGetFolloweesCount(
   requestInfo: ApiRequestInfo
 ): Promise<GetFolloweesCountResponse> {
-  const request: GetFolloweesCountRequest = JSON.parse(requestInfo.body);
+  const request: GetFolloweesCountRequest = {
+    authToken: JSON.parse(
+      requestInfo.queryParameters.authToken
+    ) as AuthTokenDTO,
+    user: JSON.parse(requestInfo.queryParameters.user) as UserDTO,
+  };
   console.log("Handling get followees count request:", request);
   const response = await UserInfoService.getFolloweesCount(
     AuthToken.fromDTO(request.authToken),
@@ -70,7 +87,15 @@ async function handleGetFolloweesCount(
 async function handleIsFollower(
   requestInfo: ApiRequestInfo
 ): Promise<GetIsFollowerResponse> {
-  const request: GetIsFollowerRequest = JSON.parse(requestInfo.body);
+  const request: GetIsFollowerRequest = {
+    authToken: JSON.parse(
+      requestInfo.queryParameters.authToken
+    ) as AuthTokenDTO,
+    user: JSON.parse(requestInfo.queryParameters.user) as UserDTO,
+    selectedUser: JSON.parse(
+      requestInfo.queryParameters.selectedUser
+    ) as UserDTO,
+  };
   console.log("Handling is follower request:", request);
   const response = await UserInfoService.getIsFollowerStatus(
     AuthToken.fromDTO(request.authToken),

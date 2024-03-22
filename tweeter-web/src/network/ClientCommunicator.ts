@@ -29,6 +29,19 @@ export class ClientCommunicator {
     };
     if (method != "GET") {
       formattedRequest.body = JSON.stringify(request);
+    } else {
+      Object.keys(request).forEach((key) => {
+        let value = request[key as keyof TweeterRequest]; // Add index signature
+        let stringValue: string = "";
+        if (typeof value !== "string") {
+          stringValue = JSON.stringify(value); // Type assertion to allow assigning string to never
+        } else {
+          stringValue = value;
+        }
+        if (stringValue !== "") {
+          url.searchParams.append(key, stringValue);
+        }
+      });
     }
     try {
       const response: Response = await fetch(url.toString(), formattedRequest);

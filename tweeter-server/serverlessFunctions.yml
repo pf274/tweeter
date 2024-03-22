@@ -52,6 +52,23 @@ authentication:
               description: "Forbidden"
             - statusCode: "500"
               description: "Internal Server Error"
+    - http: # logout
+        path: /auth/logout
+        method: post
+        documentation:
+          summary: "Logout of the application"
+          description: "Logout of the application"
+          queryParams:
+            - name: "alias"
+              description: "The alias of the user"
+              required: true
+          methodResponses:
+            - statusCode: "200"
+              description: "Success"
+            - statusCode: "403"
+              description: "Forbidden"
+            - statusCode: "500"
+              description: "Internal Server Error"
 itemload:
   handler: layers/handlers/itemload.handler
   events:
@@ -62,6 +79,22 @@ itemload:
         documentation:
           summary: "Load a page of followers"
           description: "Load a page of followers"
+          queryParams:
+            - name: "user"
+              description: "The current user"
+            - name: "pageSize"
+              description: "The number of items to load"
+              required: true
+            - name: "lastItem"
+              description: "The last item loaded"
+              required: false
+    - http:
+        path: /items/followees
+        method: get
+        # authorizer: "routeAuthorizer"
+        documentation:
+          summary: "Load a page of followees"
+          description: "Load a page of followees"
           queryParams:
             - name: "user"
               description: "The current user"

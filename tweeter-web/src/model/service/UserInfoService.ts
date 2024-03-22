@@ -1,4 +1,5 @@
-import { AuthToken, FakeData, User } from "tweeter-shared";
+import { AuthToken, GetUserByAliasRequest, User } from "tweeter-shared";
+import { ServerFacade } from "../../network/ServerFacade";
 
 const CURRENT_USER_KEY: string = "CurrentUserKey";
 const AUTH_TOKEN_KEY: string = "AuthTokenKey";
@@ -27,6 +28,11 @@ export class UserInfoService {
     alias: string
   ): Promise<User | null> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.findUserByAlias(alias);
+    const request: GetUserByAliasRequest = {
+      authToken: authToken.dto,
+      alias,
+    };
+    const response = await ServerFacade.getUserByAlias(request);
+    return response.user ? User.fromDTO(response.user) : null;
   }
 }

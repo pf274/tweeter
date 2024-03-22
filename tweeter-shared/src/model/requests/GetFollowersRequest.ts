@@ -6,5 +6,5 @@ export interface GetFollowersRequest extends TweeterRequest {
   readonly authToken: AuthTokenDTO;
   readonly user: UserDTO;
   readonly pageSize: number;
-  readonly lastItem: UserDTO;
+  readonly lastItem: UserDTO | null;
 }
