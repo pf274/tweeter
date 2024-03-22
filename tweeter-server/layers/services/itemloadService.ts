@@ -1,4 +1,6 @@
-import { User, AuthToken, Status } from "tweeter-shared";
+import { AuthToken } from "../../utils/shared-models/domain/AuthToken";
+import { User } from "../../utils/shared-models/domain/User";
+import { Status } from "../../utils/shared-models/domain/Status";
 import { FakeData } from "../../utils/FakeData";
 
 export class ItemLoadService {

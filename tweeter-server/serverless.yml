@@ -8,18 +8,25 @@ provider:
   runtime: nodejs18.x
 
 package:
-  individually: true
+  individually: false
+  excludeDevDependencies: false
 
 custom:
   serverlessPluginTypescript:
     tsConfigFileLocation: "./tsconfig.json"
+  documentation:
+    version: "1"
+    title: "Tweeter API"
+    description: "This is my tweeter API"
+    models: {}
 
 plugins:
   - serverless-offline
   - serverless-plugin-typescript
   - serverless-prune-plugin
-  - serverless-aws-documentation
-  - serverless-plugin-optimize
+  - serverless-openapi-documenter
+  - serverless-plugin-common-excludes
+  - serverless-plugin-include-dependencies
 
 functions:
   - ${file(./serverlessFunctions.yml)}

@@ -29,7 +29,10 @@ import {
 import { ClientCommunicator } from "./ClientCommunicator";
 
 export class ServerFacade {
-  private static SERVER_URL = "http://localhost:3001/dev";
+  private static isLocal = false;
+  private static SERVER_URL = this.isLocal
+    ? "http://localhost:3001/dev"
+    : "https://1oq2sys7fd.execute-api.us-east-1.amazonaws.com/dev";
   private static clientCommunicator = new ClientCommunicator(this.SERVER_URL);
   static async login(request: LoginRequest): Promise<LoginResponse> {
     return this.clientCommunicator.doRequest(request, "/auth/login", "POST");

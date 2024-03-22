@@ -15,7 +15,7 @@ export class AuthenticationService {
     firstName: string,
     lastName: string,
     imageBytes: Uint8Array
-  ): Promise<[User | null, AuthToken | null]> {
+  ): Promise<[User, AuthToken]> {
     const imageStringBase64 = Buffer.from(imageBytes).toString("base64");
 
     const response: RegisterResponse = await ServerFacade.register({
@@ -26,25 +26,31 @@ export class AuthenticationService {
       imageStringBase64,
     });
 
-    return [
-      response.user ? User.fromDTO(response.user) : null,
-      response.authToken ? AuthToken.fromDTO(response.authToken) : null,
-    ];
+    if (!response.user) {
+      throw new Error("User not found.");
+    } else if (!response.authToken) {
+      throw new Error("Auth token not found.");
+    }
+
+    return [User.fromDTO(response.user), AuthToken.fromDTO(response.authToken)];
   }
 
   public async login(
     alias: string,
     password: string
-  ): Promise<[User | null, AuthToken | null]> {
+  ): Promise<[User, AuthToken]> {
     const response: LoginResponse = await ServerFacade.login({
       username: alias,
       password,
     });
 
-    return [
-      response.user ? User.fromDTO(response.user) : null,
-      response.authToken ? AuthToken.fromDTO(response.authToken) : null,
-    ];
+    if (!response.user) {
+      throw new Error("User not found.");
+    } else if (!response.authToken) {
+      throw new Error("Auth token not found.");
+    }
+
+    return [User.fromDTO(response.user), AuthToken.fromDTO(response.authToken)];
   }
 
   public async logout(authToken: AuthToken): Promise<void> {

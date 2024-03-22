@@ -5,7 +5,6 @@ import {
 } from "aws-lambda";
 import { ApiRequestInfo, ApiRoute, methodType } from "../types/ApiRoutes";
 import { ServiceError } from "./ServiceError";
-import { TweeterRequest } from "tweeter-shared";
 
 export function getRequestInfo(event: APIGatewayProxyEvent): ApiRequestInfo {
   const queryParameters = event.queryStringParameters || {};

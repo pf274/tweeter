@@ -1,24 +1,24 @@
 import { ApiRequestInfo, ApiRoute } from "../../types/ApiRoutes";
 import { basicApiHandler } from "../../utils/ApiHelpers";
 import { UserInfoService } from "../services/UserInfoService";
+import { GetUserByAliasRequest } from "../../utils/shared-models/requests/GetUserByAliasRequest";
+import { GetUserByAliasResponse } from "../../utils/shared-models/responses/GetUserByAliasResponse";
+import { GetFollowersCountRequest } from "../../utils/shared-models/requests/GetFollowersCountRequest";
+import { GetFollowersCountResponse } from "../../utils/shared-models/responses/GetFollowersCountResponse";
+import { GetFolloweesCountRequest } from "../../utils/shared-models/requests/GetFolloweesCountRequest";
+import { GetFolloweesCountResponse } from "../../utils/shared-models/responses/GetFolloweesCountResponse";
+import { GetIsFollowerRequest } from "../../utils/shared-models/requests/GetIsFollowerRequest";
+import { GetIsFollowerResponse } from "../../utils/shared-models/responses/GetIsFollowerResponse";
+import { FollowRequest } from "../../utils/shared-models/requests/FollowRequest";
+import { FollowResponse } from "../../utils/shared-models/responses/FollowResponse";
+import { UnfollowRequest } from "../../utils/shared-models/requests/UnfollowRequest";
+import { UnfollowResponse } from "../../utils/shared-models/responses/UnfollowResponse";
 import {
-  FollowRequest,
-  FollowResponse,
-  GetFolloweesCountRequest,
-  GetFolloweesCountResponse,
-  GetFollowersCountRequest,
-  GetFollowersCountResponse,
-  GetIsFollowerRequest,
-  GetIsFollowerResponse,
-  GetUserByAliasRequest,
-  GetUserByAliasResponse,
-  UnfollowRequest,
-  UnfollowResponse,
   AuthToken,
   AuthTokenDTO,
-  User,
-  UserDTO,
-} from "tweeter-shared";
+} from "../../utils/shared-models/domain/AuthToken";
+import { User, UserDTO } from "../../utils/shared-models/domain/User";
+import { Status, StatusDTO } from "../../utils/shared-models/domain/Status";
 
 module.exports.handler = basicApiHandler("userinfo", [
   ApiRoute.get("/user/get", handleGetUserByAlias),

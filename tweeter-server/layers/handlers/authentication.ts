@@ -1,11 +1,9 @@
-import {
-  LoginRequest,
-  LoginResponse,
-  RegisterRequest,
-  RegisterResponse,
-  LogoutRequest,
-  LogoutResponse,
-} from "tweeter-shared";
+import { LoginRequest } from "../../utils/shared-models/requests/LoginRequest";
+import { LoginResponse } from "../../utils/shared-models/responses/LoginResponse";
+import { RegisterRequest } from "../../utils/shared-models/requests/RegisterRequest";
+import { RegisterResponse } from "../../utils/shared-models/responses/RegisterResponse";
+import { LogoutRequest } from "../../utils/shared-models/requests/LogoutRequest";
+import { LogoutResponse } from "../../utils/shared-models/responses/LogoutResponse";
 import { ApiRequestInfo, ApiRoute } from "../../types/ApiRoutes";
 import { basicApiHandler } from "../../utils/ApiHelpers";
 import { AuthenticationService } from "../services/authenticationService";

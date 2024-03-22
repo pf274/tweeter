@@ -1,5 +1,6 @@
-import { AuthToken, User } from "tweeter-shared";
 import { FakeData } from "../../utils/FakeData";
+import { AuthToken } from "../../utils/shared-models/domain/AuthToken";
+import { User } from "../../utils/shared-models/domain/User";
 
 export class UserInfoService {
   public static async getUserByAlias(

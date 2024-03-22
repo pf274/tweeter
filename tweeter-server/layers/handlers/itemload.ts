@@ -1,23 +1,20 @@
 import { ApiRequestInfo, ApiRoute } from "../../types/ApiRoutes";
 import { basicApiHandler } from "../../utils/ApiHelpers";
 import { ItemLoadService } from "../services/itemloadService";
+import { GetFeedRequest } from "../../utils/shared-models/requests/GetFeedRequest";
+import { GetFeedResponse } from "../../utils/shared-models/responses/GetFeedResponse";
+import { GetFollowersRequest } from "../../utils/shared-models/requests/GetFollowersRequest";
+import { GetFollowersResponse } from "../../utils/shared-models/responses/GetFollowersResponse";
+import { GetFolloweesRequest } from "../../utils/shared-models/requests/GetFolloweesRequest";
+import { GetFolloweesResponse } from "../../utils/shared-models/responses/GetFolloweesResponse";
+import { GetStoriesRequest } from "../../utils/shared-models/requests/GetStoriesRequest";
+import { GetStoriesResponse } from "../../utils/shared-models/responses/GetStoriesResponse";
 import {
-  GetFeedRequest,
-  GetFeedResponse,
-  GetFollowersRequest,
-  GetFollowersResponse,
-  GetFolloweesRequest,
-  GetFolloweesResponse,
-  GetStoriesRequest,
-  GetStoriesResponse,
   AuthToken,
   AuthTokenDTO,
-  User,
-  UserDTO,
-  Status,
-  StatusDTO,
-} from "tweeter-shared";
-
+} from "../../utils/shared-models/domain/AuthToken";
+import { User, UserDTO } from "../../utils/shared-models/domain/User";
+import { Status, StatusDTO } from "../../utils/shared-models/domain/Status";
 module.exports.handler = basicApiHandler("itemload", [
   ApiRoute.get("/items/followers", handleGetFollowers),
   ApiRoute.get("/items/followees", handleGetFollowees),

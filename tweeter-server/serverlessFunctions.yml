@@ -6,6 +6,7 @@ authentication:
     - http: # login
         path: /auth/login
         method: post
+        cors: true
         documentation:
           summary: "Login to the application"
           description: "Login to the application"
@@ -26,6 +27,7 @@ authentication:
     - http: # register
         path: /auth/register
         method: post
+        cors: true
         documentation:
           summary: "Register a new user"
           description: "Register a new user"
@@ -55,6 +57,7 @@ authentication:
     - http: # logout
         path: /auth/logout
         method: post
+        cors: true
         documentation:
           summary: "Logout of the application"
           description: "Logout of the application"
@@ -75,6 +78,7 @@ itemload:
     - http:
         path: /items/followers
         method: get
+        cors: true
         # authorizer: "routeAuthorizer"
         documentation:
           summary: "Load a page of followers"
@@ -88,9 +92,17 @@ itemload:
             - name: "lastItem"
               description: "The last item loaded"
               required: false
+          methodResponses:
+            - statusCode: "200"
+              description: "Success"
+            - statusCode: "403"
+              description: "Forbidden"
+            - statusCode: "500"
+              description: "Internal Server Error"
     - http:
         path: /items/followees
         method: get
+        cors: true
         # authorizer: "routeAuthorizer"
         documentation:
           summary: "Load a page of followees"
@@ -104,9 +116,17 @@ itemload:
             - name: "lastItem"
               description: "The last item loaded"
               required: false
+          methodResponses:
+            - statusCode: "200"
+              description: "Success"
+            - statusCode: "403"
+              description: "Forbidden"
+            - statusCode: "500"
+              description: "Internal Server Error"
     - http:
         path: /items/feed
         method: get
+        cors: true
         # authorizer: "routeAuthorizer"
         documentation:
           summary: "Load a page of feed items"
@@ -120,9 +140,17 @@ itemload:
             - name: "lastItem"
               description: "The last item loaded"
               required: false
+          methodResponses:
+            - statusCode: "200"
+              description: "Success"
+            - statusCode: "403"
+              description: "Forbidden"
+            - statusCode: "500"
+              description: "Internal Server Error"
     - http:
         path: /items/stories
         method: get
+        cors: true
         # authorizer: "routeAuthorizer"
         documentation:
           summary: "Load a page of story items"
@@ -136,12 +164,20 @@ itemload:
             - name: "lastItem"
               description: "The last item loaded"
               required: false
+          methodResponses:
+            - statusCode: "200"
+              description: "Success"
+            - statusCode: "403"
+              description: "Forbidden"
+            - statusCode: "500"
+              description: "Internal Server Error"
 userinfo:
   handler: layers/handlers/userinfo.handler
   events:
     - http:
         path: /user/get
         method: get
+        cors: true
         # authorizer: "routeAuthorizer"
         documentation:
           summary: "Gets a user by alias"
@@ -150,9 +186,17 @@ userinfo:
             - name: "alias"
               description: "The alias of the user to get"
               required: true
+          methodResponses:
+            - statusCode: "200"
+              description: "Success"
+            - statusCode: "403"
+              description: "Forbidden"
+            - statusCode: "500"
+              description: "Internal Server Error"
     - http:
         path: /user/followersCount
         method: get
+        cors: true
         # authorizer: "routeAuthorizer"
         documentation:
           summary: "Gets the number of followers for a user"
@@ -161,9 +205,17 @@ userinfo:
             - name: "user"
               description: "The user to get the followers count for"
               required: true
+          methodResponses:
+            - statusCode: "200"
+              description: "Success"
+            - statusCode: "403"
+              description: "Forbidden"
+            - statusCode: "500"
+              description: "Internal Server Error"
     - http:
         path: /user/followeesCount
         method: get
+        cors: true
         # authorizer: "routeAuthorizer"
         documentation:
           summary: "Gets the number of followees for a user"
@@ -172,9 +224,17 @@ userinfo:
             - name: "user"
               description: "The user to get the followees count for"
               required: true
+          methodResponses:
+            - statusCode: "200"
+              description: "Success"
+            - statusCode: "403"
+              description: "Forbidden"
+            - statusCode: "500"
+              description: "Internal Server Error"
     - http:
         path: /user/isFollower
         method: get
+        cors: true
         # authorizer: "routeAuthorizer"
         documentation:
           summary: "Checks if a user is a follower of another user"
@@ -186,9 +246,17 @@ userinfo:
             - name: "followee"
               description: "The user to check if they are being followed"
               required: true
+          methodResponses:
+            - statusCode: "200"
+              description: "Success"
+            - statusCode: "403"
+              description: "Forbidden"
+            - statusCode: "500"
+              description: "Internal Server Error"
     - http:
         path: /user/follow
         method: post
+        cors: true
         # authorizer: "routeAuthorizer"
         documentation:
           summary: "Follow a user"
@@ -200,9 +268,17 @@ userinfo:
             - name: "followee"
               description: "The user to follow"
               required: true
+          methodResponses:
+            - statusCode: "200"
+              description: "Success"
+            - statusCode: "403"
+              description: "Forbidden"
+            - statusCode: "500"
+              description: "Internal Server Error"
     - http:
         path: /user/unfollow
         method: post
+        cors: true
         # authorizer: "routeAuthorizer"
         documentation:
           summary: "Unfollow a user"
@@ -214,12 +290,20 @@ userinfo:
             - name: "followee"
               description: "The user to unfollow"
               required: true
+          methodResponses:
+            - statusCode: "200"
+              description: "Success"
+            - statusCode: "403"
+              description: "Forbidden"
+            - statusCode: "500"
+              description: "Internal Server Error"
 status:
   handler: layers/handlers/status.handler
   events:
     - http:
         path: /status
         method: post
+        cors: true
         # authorizer: "routeAuthorizer"
         documentation:
           summary: "Post a status"
@@ -231,3 +315,10 @@ status:
             - name: "status"
               description: "The status to post"
               required: true
+          methodResponses:
+            - statusCode: "200"
+              description: "Success"
+            - statusCode: "403"
+              description: "Forbidden"
+            - statusCode: "500"
+              description: "Internal Server Error"

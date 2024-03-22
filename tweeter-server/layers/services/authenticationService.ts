@@ -1,6 +1,7 @@
 import { FakeData } from "../../utils/FakeData";
 import { ServiceError } from "../../utils/ServiceError";
-import { User, AuthToken } from "tweeter-shared";
+import { AuthToken } from "../../utils/shared-models/domain/AuthToken";
+import { User } from "../../utils/shared-models/domain/User";
 
 export class AuthenticationService {
   static async register(

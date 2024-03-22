@@ -1,4 +1,6 @@
-import { AuthToken, Status, User } from "tweeter-shared";
+import { AuthToken } from "./shared-models/domain/AuthToken";
+import { Status } from "./shared-models/domain/Status";
+import { User } from "./shared-models/domain/User";
 
 const MALE_IMAGE_URL: string =
   "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";

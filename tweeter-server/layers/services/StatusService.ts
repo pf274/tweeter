@@ -1,4 +1,5 @@
-import { AuthToken, Status } from "tweeter-shared";
+import { AuthToken } from "../../utils/shared-models/domain/AuthToken";
+import { Status } from "../../utils/shared-models/domain/Status";
 
 export class StatusService {
   static async postStatus(
