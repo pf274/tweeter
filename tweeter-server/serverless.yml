@@ -14,17 +14,11 @@ package:
 custom:
   serverlessPluginTypescript:
     tsConfigFileLocation: "./tsconfig.json"
-  documentation:
-    version: "1"
-    title: "Tweeter API"
-    description: "This is my tweeter API"
-    models: []
 
 plugins:
   - serverless-offline
   - serverless-plugin-typescript
   - serverless-prune-plugin
-  - serverless-openapi-documenter
   - serverless-plugin-common-excludes
   - serverless-plugin-include-dependencies
 
