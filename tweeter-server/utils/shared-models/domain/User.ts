@@ -3,6 +3,7 @@ export interface UserDTO {
   lastName: string;
   alias: string;
   imageURL: string;
+  encryptedPassword: string;
 }
 
 export class User {
@@ -10,17 +11,20 @@ export class User {
   private _lastName: string;
   private _alias: string;
   private _imageUrl: string;
+  private _encryptedPassword: string;
 
   public constructor(
     firstName: string,
     lastName: string,
     alias: string,
-    imageUrl: string
+    imageUrl: string,
+    encryptedPassword: string
   ) {
     this._firstName = firstName;
     this._lastName = lastName;
     this._alias = alias;
     this._imageUrl = imageUrl;
+    this._encryptedPassword = encryptedPassword;
   }
 
   public get firstName(): string {
@@ -59,6 +63,10 @@ export class User {
     this._imageUrl = value;
   }
 
+  public get encryptedPassword(): string {
+    return this._encryptedPassword;
+  }
+
   public equals(other: User): boolean {
     return this._alias === other._alias;
   }
@@ -70,12 +78,14 @@ export class User {
         _lastName: string;
         _alias: string;
         _imageUrl: string;
+        _encryptedPassword: string;
       } = JSON.parse(json);
       return new User(
         jsonObject._firstName,
         jsonObject._lastName,
         jsonObject._alias,
-        jsonObject._imageUrl
+        jsonObject._imageUrl,
+        jsonObject._encryptedPassword
       );
     } else {
       return null;
@@ -87,7 +97,7 @@ export class User {
   }
 
   public static fromDTO(dto: UserDTO): User {
-    return new User(dto.firstName, dto.lastName, dto.alias, dto.imageURL);
+    return new User(dto.firstName, dto.lastName, dto.alias, dto.imageURL, dto.encryptedPassword);
   }
 
   public get dto(): UserDTO {
@@ -96,6 +106,7 @@ export class User {
       lastName: this._lastName,
       alias: this._alias,
       imageURL: this._imageUrl,
+      encryptedPassword: this._encryptedPassword,
     };
   }
 }

@@ -1,8 +1,9 @@
 import { FakeData } from "../../utils/FakeData";
 import { AuthToken } from "../../utils/shared-models/domain/AuthToken";
 import { User } from "../../utils/shared-models/domain/User";
+import { Service } from "./Service";
 
-export class UserInfoService {
+export class UserInfoService extends Service {
   public static async getUserByAlias(
     authToken: AuthToken,
     alias: string
@@ -41,14 +42,8 @@ export class UserInfoService {
     authToken: AuthToken,
     userToFollow: User
   ): Promise<{ followersCount: number; followeesCount: number }> {
-    const { count: followersCount } = await this.getFollowersCount(
-      authToken,
-      userToFollow
-    );
-    const { count: followeesCount } = await this.getFolloweesCount(
-      authToken,
-      userToFollow
-    );
+    const { count: followersCount } = await this.getFollowersCount(authToken, userToFollow);
+    const { count: followeesCount } = await this.getFolloweesCount(authToken, userToFollow);
 
     return { followersCount, followeesCount };
   }
@@ -57,14 +52,8 @@ export class UserInfoService {
     authToken: AuthToken,
     userToUnfollow: User
   ): Promise<{ followersCount: number; followeesCount: number }> {
-    const { count: followersCount } = await this.getFollowersCount(
-      authToken,
-      userToUnfollow
-    );
-    const { count: followeesCount } = await this.getFolloweesCount(
-      authToken,
-      userToUnfollow
-    );
+    const { count: followersCount } = await this.getFollowersCount(authToken, userToUnfollow);
+    const { count: followeesCount } = await this.getFolloweesCount(authToken, userToUnfollow);
 
     return { followersCount, followeesCount };
   }

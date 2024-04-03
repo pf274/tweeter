@@ -1,9 +1,9 @@
-import { FakeData } from "../../utils/FakeData";
 import { ServiceError } from "../../utils/ServiceError";
 import { AuthToken } from "../../utils/shared-models/domain/AuthToken";
 import { User } from "../../utils/shared-models/domain/User";
+import { Service } from "./Service";
 
-export class AuthenticationService {
+export class AuthenticationService extends Service {
   static async register(
     alias: string,
     password: string,
@@ -11,13 +11,10 @@ export class AuthenticationService {
     lastName: string,
     imageBytes: Uint8Array
   ): Promise<{ user: User; authToken: AuthToken }> {
-    let user = FakeData.instance.firstUser;
-    let authToken = FakeData.instance.authToken;
-
-    if (user === null) {
-      throw new ServiceError(400, "Invalid registration");
-    }
-
+    const imageBuffer = Buffer.from(imageBytes);
+    const imageURL = await this.imageFactory.uploadImage(imageBuffer, alias);
+    const user = await this.userFactory.saveUser(alias, password, firstName, lastName, imageURL);
+    const authToken = await this.authTokenFactory.createAuthToken();
     return { user, authToken };
   }
 
@@ -25,13 +22,11 @@ export class AuthenticationService {
     alias: string,
     password: string
   ): Promise<{ user: User; authToken: AuthToken }> {
-    const user = FakeData.instance.firstUser;
-    let authToken = FakeData.instance.authToken;
-
-    if (user === null) {
-      throw new Error("Invalid alias or password");
+    const user = await this.userFactory.checkCredentials(alias, password);
+    if (!user) {
+      throw new ServiceError(400, "Invalid alias or password");
     }
-
+    const authToken = await this.authTokenFactory.createAuthToken();
     return { user, authToken };
   }
 }

@@ -3,13 +3,10 @@ function uuid() {
     .fill(0)
     .map(() => Math.floor(Math.random() * 16).toString(16))
     .join("");
-  return `${randomString.slice(0, 8)}-${randomString.slice(
-    8,
-    12
-  )}-${randomString.slice(12, 16)}-${randomString.slice(
-    16,
-    20
-  )}-${randomString.slice(20, 32)}`;
+  return `${randomString.slice(0, 8)}-${randomString.slice(8, 12)}-${randomString.slice(
+    12,
+    16
+  )}-${randomString.slice(16, 20)}-${randomString.slice(20, 32)}`;
 }
 
 export interface AuthTokenDTO {
@@ -22,8 +19,8 @@ export class AuthToken {
   private _timestamp: number;
 
   public static Generate(): AuthToken {
-    let token: string = AuthToken.generateToken();
-    let timestamp: number = Date.now();
+    const token: string = AuthToken.generateToken();
+    const timestamp: number = Date.now();
     return new AuthToken(token, timestamp);
   }
 
@@ -33,13 +30,10 @@ export class AuthToken {
     } catch (error) {
       // UUID not available. Generating a random string. Making it 64 characters to reduce the liklihood of a duplicate
       let result = "";
-      const characters =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$^*()-+";
+      const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$^*()-+";
       const charactersLength = characters.length;
       for (let i = 0; i < 64; i++) {
-        result += characters.charAt(
-          Math.floor(Math.random() * charactersLength)
-        );
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
       }
 
       return result;
