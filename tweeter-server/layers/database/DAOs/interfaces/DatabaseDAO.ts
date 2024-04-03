@@ -9,7 +9,12 @@ export interface DatabaseDAO extends DAO {
     secondaryAttributeValue?: string
   ): Promise<object | null>;
   update(attributeName: string, attributeValue: string, data: object): Promise<object>;
-  delete(attributeName: string, attributeValue: string): Promise<void>;
+  delete(
+    attributeName: string,
+    attributeValue: string,
+    secondaryAttributeName?: string,
+    secondaryAttributeValue?: string
+  ): Promise<void>;
   getMany(
     maxCount: number,
     firstItem?: string,

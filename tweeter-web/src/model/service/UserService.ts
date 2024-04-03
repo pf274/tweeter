@@ -10,10 +10,7 @@ import {
 import { ServerFacade } from "../../network/ServerFacade";
 
 export class UserService {
-  public async getFollowersCount(
-    authToken: AuthToken,
-    user: User
-  ): Promise<number> {
+  public async getFollowersCount(authToken: AuthToken, user: User): Promise<number> {
     const request: GetFollowersCountRequest = {
       authToken: authToken.dto,
       user: user.dto,
@@ -22,10 +19,7 @@ export class UserService {
     return response.count;
   }
 
-  public async getFolloweesCount(
-    authToken: AuthToken,
-    user: User
-  ): Promise<number> {
+  public async getFolloweesCount(authToken: AuthToken, user: User): Promise<number> {
     const request: GetFolloweesCountRequest = {
       authToken: authToken.dto,
       user: user.dto,
@@ -50,10 +44,12 @@ export class UserService {
 
   public async follow(
     authToken: AuthToken,
+    currentUser: User,
     userToFollow: User
   ): Promise<[followersCount: number, followeesCount: number]> {
     const request: FollowRequest = {
       authToken: authToken.dto,
+      user: currentUser.dto,
       userToFollow: userToFollow.dto,
     };
     const response = await ServerFacade.follow(request);
@@ -63,10 +59,12 @@ export class UserService {
 
   public async unfollow(
     authToken: AuthToken,
+    currentUser: User,
     userToUnfollow: User
   ): Promise<[followersCount: number, followeesCount: number]> {
     const request: UnfollowRequest = {
       authToken: authToken.dto,
+      user: currentUser.dto,
       userToUnfollow: userToUnfollow.dto,
     };
     const response = await ServerFacade.unfollow(request);

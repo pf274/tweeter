@@ -64,12 +64,13 @@ export class UserInfoPresenter extends Presenter {
     }, "get followers count");
   }
 
-  public async follow(authToken: AuthToken, userToFollow: User): Promise<void> {
+  public async follow(authToken: AuthToken, currentUser: User, userToFollow: User): Promise<void> {
     this.doFailureReportingOperation(async () => {
       this.view.displayInfoMessage(`Adding ${userToFollow!.name} to followers...`, 0);
 
       let [newFollowersCount, newFolloweesCount] = await this.service.follow(
         authToken,
+        currentUser,
         userToFollow
       );
 
@@ -81,12 +82,17 @@ export class UserInfoPresenter extends Presenter {
     }, "follow user");
   }
 
-  public async unfollow(authToken: AuthToken, userToUnfollow: User): Promise<void> {
+  public async unfollow(
+    authToken: AuthToken,
+    currentUser: User,
+    userToUnfollow: User
+  ): Promise<void> {
     this.doFailureReportingOperation(async () => {
       this.view.displayInfoMessage(`Removing ${userToUnfollow.name} from followers...`, 0);
 
       const [newFollowersCount, newFolloweesCount] = await this.service.unfollow(
         authToken,
+        currentUser,
         userToUnfollow
       );
 

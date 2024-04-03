@@ -15,12 +15,18 @@ export class ItemLoadService extends Service {
     if (!validToken) {
       throw new ServiceError(403, "Insufficient rights");
     }
-    const { users, lastAlias } = await this.followsFactory.getFollowers(
+    const { usersAliases, lastAlias } = await this.followsFactory.getFollowers(
       user.alias,
       pageSize,
       lastItem ? lastItem.alias : undefined
     );
-    return { users, hasMore: !!lastAlias };
+    const users = await Promise.all(
+      usersAliases.map(async (alias) => {
+        return await this.userFactory.getUser(alias);
+      })
+    );
+    const filteredUsers: User[] = users.filter((user) => user !== null) as User[];
+    return { users: filteredUsers, hasMore: !!lastAlias };
   }
 
   public static async loadMoreFollowees(
@@ -33,12 +39,18 @@ export class ItemLoadService extends Service {
     if (!validToken) {
       throw new ServiceError(403, "Insufficient rights");
     }
-    const { users, lastAlias } = await this.followsFactory.getFollowees(
+    const { usersAliases, lastAlias } = await this.followsFactory.getFollowees(
       user.alias,
       pageSize,
       lastItem?.alias
     );
-    return { users, hasMore: !!lastAlias };
+    const users = await Promise.all(
+      usersAliases.map(async (alias) => {
+        return await this.userFactory.getUser(alias);
+      })
+    );
+    const filteredUsers: User[] = users.filter((user) => user !== null) as User[];
+    return { users: filteredUsers, hasMore: !!lastAlias };
   }
 
   static async loadMoreFeedItems(

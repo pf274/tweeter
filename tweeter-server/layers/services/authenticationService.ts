@@ -11,14 +11,20 @@ export class AuthenticationService extends Service {
     lastName: string,
     imageBytes: Uint8Array
   ): Promise<{ user: User; authToken: AuthToken }> {
-    const prevUser = await this.userFactory.getUser(alias);
+    const formattedAlias = alias.startsWith("@") ? alias : `@${alias}`;
+    const prevUser = await this.userFactory.getUser(formattedAlias);
     if (prevUser) {
       throw new ServiceError(400, "Alias already taken");
     }
     const imageBuffer = Buffer.from(imageBytes);
-    const imageURL = await this.imageFactory.uploadImage(imageBuffer, alias);
-    // const imageURL = "https://www.example.com/image.jpg"; // todo: replace with actual image URL
-    const user = await this.userFactory.saveUser(alias, password, firstName, lastName, imageURL);
+    const imageURL = await this.imageFactory.uploadImage(imageBuffer, formattedAlias);
+    const user = await this.userFactory.saveUser(
+      formattedAlias,
+      password,
+      firstName,
+      lastName,
+      imageURL
+    );
     const authToken = await this.authTokenFactory.createAuthToken();
     return { user, authToken };
   }
@@ -27,7 +33,8 @@ export class AuthenticationService extends Service {
     alias: string,
     password: string
   ): Promise<{ user: User; authToken: AuthToken }> {
-    const user = await this.userFactory.checkCredentials(alias, password);
+    const formattedAlias = alias.startsWith("@") ? alias : `@${alias}`;
+    const user = await this.userFactory.checkCredentials(formattedAlias, password);
     if (!user) {
       throw new ServiceError(400, "Invalid alias or password");
     }

@@ -82,7 +82,12 @@ export class DynamoDBDAO implements DatabaseDAO {
       throw new ServiceError(500, `Error querying dynamodb items: ${(err as Error).message}`);
     }
   }
-  async delete(attributeName: string, attributeValue: string): Promise<void> {
+  async delete(
+    attributeName: string,
+    attributeValue: string,
+    secondaryAttributeName?: string,
+    secondaryAttributeValue?: string
+  ): Promise<void> {
     try {
       const params: DeleteCommandInput = {
         TableName: this.tableName,
@@ -90,6 +95,9 @@ export class DynamoDBDAO implements DatabaseDAO {
           [attributeName]: attributeValue,
         },
       };
+      if (secondaryAttributeName && secondaryAttributeValue) {
+        params.Key![secondaryAttributeName] = secondaryAttributeValue;
+      }
       const command = new DeleteCommand(params);
       await this.client.send(command);
     } catch (err) {

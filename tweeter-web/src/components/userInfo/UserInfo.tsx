@@ -3,27 +3,20 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoHook from "./UserInfoHook";
-import {
-  UserInfoPresenter,
-  UserInfoView,
-} from "../../presenter/user/UserInfoPresenter";
+import { UserInfoPresenter, UserInfoView } from "../../presenter/user/UserInfoPresenter";
 
 interface UserInfoProps {}
 
 const UserInfo = (props: UserInfoProps) => {
-  const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
-    useToastListener();
+  const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } = useToastListener();
   const listener: UserInfoView = {
     displayErrorMessage,
     displayInfoMessage,
     clearLastInfoMessage,
   };
-  const [presenter] = useState<UserInfoPresenter>(
-    new UserInfoPresenter(listener)
-  );
+  const [presenter] = useState<UserInfoPresenter>(new UserInfoPresenter(listener));
 
-  const { currentUser, authToken, displayedUser, setDisplayedUser } =
-    useUserInfoHook();
+  const { currentUser, authToken, displayedUser, setDisplayedUser } = useUserInfoHook();
 
   if (!displayedUser) {
     setDisplayedUser(currentUser!);
@@ -40,18 +33,14 @@ const UserInfo = (props: UserInfoProps) => {
     setDisplayedUser(currentUser!);
   };
 
-  const followDisplayedUser = async (
-    event: React.MouseEvent
-  ): Promise<void> => {
+  const followDisplayedUser = async (event: React.MouseEvent): Promise<void> => {
     event.preventDefault();
-    presenter.follow(authToken!, displayedUser!);
+    presenter.follow(authToken!, currentUser!, displayedUser!);
   };
 
-  const unfollowDisplayedUser = async (
-    event: React.MouseEvent
-  ): Promise<void> => {
+  const unfollowDisplayedUser = async (event: React.MouseEvent): Promise<void> => {
     event.preventDefault();
-    presenter.unfollow(authToken!, displayedUser!);
+    presenter.unfollow(authToken!, currentUser!, displayedUser!);
   };
 
   return (
@@ -73,10 +62,7 @@ const UserInfo = (props: UserInfoProps) => {
               {displayedUser !== currentUser && (
                 <p id="returnToLoggedInUser">
                   Return to{" "}
-                  <Link
-                    to={""}
-                    onClick={(event) => switchToLoggedInUser(event)}
-                  >
+                  <Link to={""} onClick={(event) => switchToLoggedInUser(event)}>
                     logged in user
                   </Link>
                 </p>
@@ -86,13 +72,11 @@ const UserInfo = (props: UserInfoProps) => {
               </h2>
               <h3>{displayedUser.alias}</h3>
               <br />
-              {presenter.followeesCount > -1 &&
-                presenter.followersCount > -1 && (
-                  <div>
-                    Following: {presenter.followeesCount} Followers:{" "}
-                    {presenter.followersCount}
-                  </div>
-                )}
+              {presenter.followeesCount > -1 && presenter.followersCount > -1 && (
+                <div>
+                  Following: {presenter.followeesCount} Followers: {presenter.followersCount}
+                </div>
+              )}
             </div>
             <form>
               {displayedUser !== currentUser && (

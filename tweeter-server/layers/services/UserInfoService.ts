@@ -55,9 +55,11 @@ export class UserInfoService extends Service {
 
   public static async follow(
     authToken: AuthToken,
+    currentUser: User,
     userToFollow: User
   ): Promise<{ followersCount: number; followeesCount: number }> {
     await this.userFactory.incrementFolloweesCount(userToFollow.alias);
+    await this.followsFactory.follow(currentUser.alias, userToFollow.alias);
     const { count: followersCount } = await this.getFollowersCount(authToken, userToFollow);
     const { count: followeesCount } = await this.getFolloweesCount(authToken, userToFollow);
     return { followersCount, followeesCount };
@@ -65,8 +67,10 @@ export class UserInfoService extends Service {
 
   public static async unfollow(
     authToken: AuthToken,
+    currentUser: User,
     userToUnfollow: User
   ): Promise<{ followersCount: number; followeesCount: number }> {
+    await this.followsFactory.unfollow(currentUser.alias, userToUnfollow.alias);
     await this.userFactory.decrementFolloweesCount(userToUnfollow.alias);
     const { count: followersCount } = await this.getFollowersCount(authToken, userToUnfollow);
     const { count: followeesCount } = await this.getFolloweesCount(authToken, userToUnfollow);
