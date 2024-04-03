@@ -32,9 +32,9 @@ const Register = () => {
 
   const [presenter] = useState(new RegisterPresenter(listener));
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    const [newImageBytes, newImageUrl] = presenter.handleImageFile(file);
+    const [newImageBytes, newImageUrl] = await presenter.handleImageFile(file);
     setImageBytes(newImageBytes);
     setImageUrl(newImageUrl);
   };

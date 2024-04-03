@@ -18,11 +18,10 @@ export class S3DAO implements StorageDAO {
       Key: fileName,
       Body: data,
       ContentType: contentType,
-      ACL: "public-read",
     };
     const command = new PutObjectCommand(params);
     await this.client.send(command);
-    return `https://${this.bucketName}.s3.us-east-1.amazonaws.com/image/${fileName}`;
+    return `https://${this.bucketName}.s3.us-east-1.amazonaws.com/${fileName}`;
   }
 
   public constructor(bucketName: string) {

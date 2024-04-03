@@ -35,24 +35,28 @@ export class RegisterPresenter extends AuthPresenter {
     return !firstName || !lastName || !alias || !password || !imageUrl;
   }
 
-  public handleImageFile(file: File | undefined): [newImageBytes: Uint8Array, newImageUrl: string] {
+  public async handleImageFile(
+    file: File | undefined
+  ): Promise<[newImageBytes: Uint8Array, newImageUrl: string]> {
     let newImageBytes: Uint8Array = new Uint8Array();
     let newImageUrl: string = "";
     if (file) {
       newImageUrl = URL.createObjectURL(file);
 
       const reader = new FileReader();
-      reader.onload = (event: ProgressEvent<FileReader>) => {
-        const imageStringBase64 = event.target?.result as string;
-
-        // Remove unnecessary file metadata from the start of the string.
-        const imageStringBase64BufferContents = imageStringBase64.split("base64,")[1];
-
-        const bytes: Uint8Array = Buffer.from(imageStringBase64BufferContents, "base64");
-
-        newImageBytes = bytes;
-      };
+      const promise = new Promise<[newImageBytes: Uint8Array, newImageUrl: string]>(
+        (resolve, reject) => {
+          reader.onload = (event: ProgressEvent<FileReader>) => {
+            const imageStringBase64 = event.target?.result as string;
+            const imageStringBase64BufferContents = imageStringBase64.split("base64,")[1];
+            newImageBytes = new Uint8Array(Buffer.from(imageStringBase64BufferContents, "base64"));
+            resolve([newImageBytes, newImageUrl]);
+          };
+          reader.onerror = (error) => reject(error);
+        }
+      );
       reader.readAsDataURL(file);
+      return await promise;
     }
     return [newImageBytes, newImageUrl];
   }

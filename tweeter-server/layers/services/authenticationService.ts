@@ -16,8 +16,8 @@ export class AuthenticationService extends Service {
       throw new ServiceError(400, "Alias already taken");
     }
     const imageBuffer = Buffer.from(imageBytes);
-    // const imageURL = await this.imageFactory.uploadImage(imageBuffer, alias);
-    const imageURL = "https://www.example.com/image.jpg"; // todo: replace with actual image URL
+    const imageURL = await this.imageFactory.uploadImage(imageBuffer, alias);
+    // const imageURL = "https://www.example.com/image.jpg"; // todo: replace with actual image URL
     const user = await this.userFactory.saveUser(alias, password, firstName, lastName, imageURL);
     const authToken = await this.authTokenFactory.createAuthToken();
     return { user, authToken };
