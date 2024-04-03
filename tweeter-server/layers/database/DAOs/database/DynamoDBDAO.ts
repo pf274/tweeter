@@ -1,27 +1,28 @@
-import {
-  AttributeValue,
-  DeleteItemCommand,
-  DeleteItemCommandInput,
-  DynamoDBClient,
-  GetItemCommand,
-  GetItemInput,
-  PutItemCommand,
-  PutItemCommandInput,
-  QueryCommand,
-  QueryCommandInput,
-  UpdateItemCommand,
-  UpdateItemCommandInput,
-} from "@aws-sdk/client-dynamodb";
 import { ServiceError } from "../../../../utils/ServiceError";
 import { DatabaseDAO } from "../interfaces/DatabaseDAO";
+import {
+  DeleteCommand,
+  DeleteCommandInput,
+  DynamoDBDocumentClient,
+  GetCommand,
+  GetCommandInput,
+  PutCommand,
+  PutCommandInput,
+  QueryCommand,
+  QueryCommandInput,
+  UpdateCommand,
+  UpdateCommandInput,
+} from "@aws-sdk/lib-dynamodb";
+import { DescribeTableCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
 export class DynamoDBDAO implements DatabaseDAO {
   private tableName: string;
-  private _client: DynamoDBClient | null = null;
+  private _client: DynamoDBDocumentClient | null = null;
 
-  private get client(): DynamoDBClient {
+  private get client(): DynamoDBDocumentClient {
     if (this._client === null) {
-      this._client = new DynamoDBClient({ region: "us-east-1" });
+      const client = new DynamoDBClient({ region: "us-east-1" });
+      this._client = DynamoDBDocumentClient.from(client);
     }
     return this._client;
   }
@@ -30,14 +31,14 @@ export class DynamoDBDAO implements DatabaseDAO {
   }
   async save(attributeName: string, attributeValue: string, data: object): Promise<void> {
     try {
-      const params: PutItemCommandInput = {
+      const params: PutCommandInput = {
         TableName: this.tableName,
         Item: {
           ...data,
-          [attributeName]: { S: attributeValue },
+          [attributeName]: attributeValue,
         },
       };
-      const command = new PutItemCommand(params);
+      const command = new PutCommand(params);
       await this.client.send(command);
     } catch (err) {
       console.error(err);
@@ -83,7 +84,7 @@ export class DynamoDBDAO implements DatabaseDAO {
   }
   async delete(attributeName: string, attributeValue: string): Promise<void> {
     try {
-      const params: DeleteItemCommandInput = {
+      const params: DeleteCommandInput = {
         TableName: this.tableName,
         Key: {
           [attributeName]: {
@@ -91,7 +92,7 @@ export class DynamoDBDAO implements DatabaseDAO {
           },
         },
       };
-      const command = new DeleteItemCommand(params);
+      const command = new DeleteCommand(params);
       await this.client.send(command);
     } catch (err) {
       console.error(err);
@@ -105,7 +106,7 @@ export class DynamoDBDAO implements DatabaseDAO {
     secondaryAttributeValue?: string
   ): Promise<object | null> {
     try {
-      const params: GetItemInput = {
+      const params: GetCommandInput = {
         TableName: this.tableName,
         Key: {
           [attributeName]: {
@@ -118,18 +119,18 @@ export class DynamoDBDAO implements DatabaseDAO {
           S: secondaryAttributeValue,
         };
       }
-      const command = new GetItemCommand(params);
+      const command = new GetCommand(params);
       const results = await this.client.send(command);
       return results.Item ? (results.Item as object) : null;
     } catch (err) {
       console.error(err);
+      if ((err as Error).name === "ResourceNotFoundException") return null;
       throw new ServiceError(500, `Error getting dynamodb item: ${(err as Error).message}`);
     }
   }
   async update(attributeName: string, attributeValue: string, data: object): Promise<object> {
     try {
-      const convertedData = convertObject(data);
-      const params: UpdateItemCommandInput = {
+      const params: UpdateCommandInput = {
         TableName: this.tableName,
         Key: {
           [attributeName]: {
@@ -141,10 +142,10 @@ export class DynamoDBDAO implements DatabaseDAO {
           "#data": "data",
         },
         ExpressionAttributeValues: {
-          ":data": convertedData as AttributeValue,
+          ":data": data,
         },
       };
-      const command = new UpdateItemCommand(params);
+      const command = new UpdateCommand(params);
       const results = await this.client.send(command);
       return results.Attributes as object;
     } catch (err) {
@@ -178,6 +179,10 @@ function convertObject(obj: object): object {
       convertedData[key] = convertObject(value as object);
     } else if (dataType === "L") {
       convertedData[key] = convertArray(value as any[]);
+    } else if (dataType === "N") {
+      convertedData[key] = {
+        N: JSON.stringify(value),
+      };
     } else {
       convertedData[key] = {
         [dataType]: value,
@@ -195,6 +200,10 @@ function convertArray(arr: any[]): any[] {
       convertedData.push(convertObject(value as object));
     } else if (dataType === "L") {
       convertedData.push(convertArray(value as any[]));
+    } else if (dataType === "N") {
+      convertedData.push({
+        N: JSON.stringify(value),
+      });
     } else {
       convertedData.push({
         [dataType]: value,

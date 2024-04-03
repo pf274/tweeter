@@ -34,10 +34,10 @@ export class DDBUserFactory extends AbstractUserFactory {
 
   async checkCredentials(alias: string, password: string): Promise<User | null> {
     const data = await this.dao.get("handle", alias);
-    const user: User = User.fromDTO(data as UserDTO);
-    if (user === null) {
+    if (data === null) {
       return null;
     }
+    const user: User = User.fromDTO(data as UserDTO);
     if (!(await bcrypt.compare(password, user.encryptedPassword))) {
       return null;
     }

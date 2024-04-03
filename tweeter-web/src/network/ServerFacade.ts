@@ -29,7 +29,7 @@ import {
 import { ClientCommunicator } from "./ClientCommunicator";
 
 export class ServerFacade {
-  private static isLocal = false;
+  private static isLocal = true;
   private static SERVER_URL = this.isLocal
     ? "http://localhost:3001/dev"
     : "https://1oq2sys7fd.execute-api.us-east-1.amazonaws.com/dev";
@@ -43,63 +43,33 @@ export class ServerFacade {
   static async logout(request: LogoutRequest): Promise<LogoutResponse> {
     return this.clientCommunicator.doRequest(request, "/auth/logout", "POST");
   }
-  static async getFollowers(
-    request: GetFollowersRequest
-  ): Promise<GetFollowersResponse> {
-    return this.clientCommunicator.doRequest(
-      request,
-      "/items/followers",
-      "GET"
-    );
+  static async getFollowers(request: GetFollowersRequest): Promise<GetFollowersResponse> {
+    return this.clientCommunicator.doRequest(request, "/items/followers", "GET");
   }
-  static async getFollowees(
-    request: GetFolloweesRequest
-  ): Promise<GetFolloweesResponse> {
-    return this.clientCommunicator.doRequest(
-      request,
-      "/items/followees",
-      "GET"
-    );
+  static async getFollowees(request: GetFolloweesRequest): Promise<GetFolloweesResponse> {
+    return this.clientCommunicator.doRequest(request, "/items/followees", "GET");
   }
   static async getFeedItems(request: GetFeedRequest): Promise<GetFeedResponse> {
     return this.clientCommunicator.doRequest(request, "/items/feed", "GET");
   }
-  static async getStoryItems(
-    request: GetStoriesRequest
-  ): Promise<GetStoriesResponse> {
+  static async getStoryItems(request: GetStoriesRequest): Promise<GetStoriesResponse> {
     return this.clientCommunicator.doRequest(request, "/items/stories", "GET");
   }
-  static async getUserByAlias(
-    request: GetUserByAliasRequest
-  ): Promise<GetUserByAliasResponse> {
+  static async getUserByAlias(request: GetUserByAliasRequest): Promise<GetUserByAliasResponse> {
     return this.clientCommunicator.doRequest(request, "/user/get", "GET");
   }
   static async getFollowersCount(
     request: GetFollowersCountRequest
   ): Promise<GetFollowersCountResponse> {
-    return this.clientCommunicator.doRequest(
-      request,
-      "/user/followersCount",
-      "GET"
-    );
+    return this.clientCommunicator.doRequest(request, "/user/followersCount", "GET");
   }
   static async getFolloweesCount(
     request: GetFollowersCountRequest
   ): Promise<GetFollowersCountResponse> {
-    return this.clientCommunicator.doRequest(
-      request,
-      "/user/followeesCount",
-      "GET"
-    );
+    return this.clientCommunicator.doRequest(request, "/user/followeesCount", "GET");
   }
-  static async getIsFollowerStatus(
-    request: GetIsFollowerRequest
-  ): Promise<GetIsFollowerResponse> {
-    return this.clientCommunicator.doRequest(
-      request,
-      "/user/isFollower",
-      "GET"
-    );
+  static async getIsFollowerStatus(request: GetIsFollowerRequest): Promise<GetIsFollowerResponse> {
+    return this.clientCommunicator.doRequest(request, "/user/isFollower", "GET");
   }
   static async follow(request: FollowRequest): Promise<FollowResponse> {
     return this.clientCommunicator.doRequest(request, "/user/follow", "POST");
@@ -107,9 +77,7 @@ export class ServerFacade {
   static async unfollow(request: UnfollowRequest): Promise<UnfollowResponse> {
     return this.clientCommunicator.doRequest(request, "/user/unfollow", "POST");
   }
-  static async postStatus(
-    request: PostStatusRequest
-  ): Promise<PostStatusResponse> {
+  static async postStatus(request: PostStatusRequest): Promise<PostStatusResponse> {
     return this.clientCommunicator.doRequest(request, "/status", "POST");
   }
 }

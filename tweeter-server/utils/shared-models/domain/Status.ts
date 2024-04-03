@@ -45,12 +45,7 @@ export class Status {
 
     if (startIndex < post.length) {
       segments.push(
-        new PostSegment(
-          post.substring(startIndex),
-          startIndex,
-          post.length,
-          Type.text
-        )
+        new PostSegment(post.substring(startIndex), startIndex, post.length, Type.text)
       );
     }
 
@@ -83,9 +78,7 @@ export class Status {
 
       if (startIndex > -1) {
         // Push the url
-        references.push(
-          new PostSegment(url, startIndex, startIndex + url.length, Type.url)
-        );
+        references.push(new PostSegment(url, startIndex, startIndex + url.length, Type.url));
 
         // Move start and previous start past the url
         startIndex = startIndex + url.length;
@@ -156,12 +149,7 @@ export class Status {
       if (startIndex > -1) {
         // Push the alias
         references.push(
-          new PostSegment(
-            mention,
-            startIndex,
-            startIndex + mention.length,
-            Type.alias
-          )
+          new PostSegment(mention, startIndex, startIndex + mention.length, Type.alias)
         );
 
         // Move start and previous start past the mention
@@ -196,9 +184,7 @@ export class Status {
     let match;
     while ((match = regex.exec(post)) !== null) {
       const matchIndex = match.index;
-      newlines.push(
-        new PostSegment("\n", matchIndex, matchIndex + 1, Type.newline)
-      );
+      newlines.push(new PostSegment("\n", matchIndex, matchIndex + 1, Type.newline));
     }
 
     return newlines;
@@ -258,6 +244,7 @@ export class Status {
           _lastName: string;
           _alias: string;
           _imageUrl: string;
+          _encryptedPassword: string;
         };
         _timestamp: number;
         _segments: PostSegment[];
@@ -268,7 +255,8 @@ export class Status {
           jsonObject._user._firstName,
           jsonObject._user._lastName,
           jsonObject._user._alias,
-          jsonObject._user._imageUrl
+          jsonObject._user._imageUrl,
+          jsonObject._user._encryptedPassword
         ),
         jsonObject._timestamp
       );
