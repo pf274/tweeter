@@ -270,7 +270,11 @@ export class Status {
   }
 
   public static fromDTO(dto: StatusDTO): Status {
-    return new Status(dto.post, User.fromDTO(dto.user), dto.timestamp);
+    return new Status(
+      dto.post,
+      User.fromDTO(dto.user),
+      typeof dto.timestamp === "string" ? parseInt(dto.timestamp) : dto.timestamp
+    );
   }
 
   public get dto(): StatusDTO {
