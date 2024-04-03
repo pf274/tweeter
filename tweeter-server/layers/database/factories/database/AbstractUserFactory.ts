@@ -15,7 +15,7 @@ export abstract class AbstractUserFactory extends AbstractFactory<DatabaseDAO> {
 
   abstract checkCredentials(alias: string, password: string): Promise<User | null>;
 
-  abstract getUser(alias: string): Promise<User>;
+  abstract getUser(alias: string): Promise<User | null>;
 
   abstract getFollowersCount(alias: string): Promise<number>;
 

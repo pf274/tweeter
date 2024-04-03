@@ -44,9 +44,13 @@ export class DDBUserFactory extends AbstractUserFactory {
     return user;
   }
 
-  async getUser(alias: string): Promise<User> {
+  async getUser(alias: string): Promise<User | null> {
     const data = await this.dao.get("handle", alias);
-    return User.fromDTO(data as UserDTO);
+    if (data) {
+      return User.fromDTO(data as UserDTO);
+    } else {
+      return null;
+    }
   }
 
   async getFollowersCount(alias: string): Promise<number> {

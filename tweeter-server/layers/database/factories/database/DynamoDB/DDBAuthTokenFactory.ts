@@ -9,7 +9,7 @@ export class DDBAuthTokenFactory extends AbstractAuthTokenFactory {
 
   async createAuthToken(): Promise<AuthToken> {
     const authToken = AuthToken.Generate();
-    await this.dao.save("authToken", authToken.token, authToken);
+    await this.dao.save("authToken", authToken.token, authToken.dto);
     return authToken;
   }
 
@@ -18,7 +18,7 @@ export class DDBAuthTokenFactory extends AbstractAuthTokenFactory {
       const entry = await this.dao.get("authToken", authToken.token);
       if (entry) {
         const authTokenDTO: AuthTokenDTO = entry as AuthTokenDTO;
-        return authTokenDTO.timestamp + 1000 * 60 * 60 * 24 > Date.now();
+        return authToken.timestamp + 1000 * 60 * 60 * 24 > Date.now(); // CHANGE BACK TO USING AUTHTOKENDTO
       }
       return false;
     } catch (err) {

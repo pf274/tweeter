@@ -12,7 +12,8 @@ export class DDBFollowsFactory extends AbstractFollowsFactory {
       numFollowers,
       firstAlias,
       "followee_handle",
-      alias
+      alias,
+      "follows_index"
     );
     const users = items.map((item: any) => User.fromDTO(item as UserDTO));
     return { users, lastAlias: lastItemReturned };

@@ -14,6 +14,7 @@ export interface DatabaseDAO extends DAO {
     maxCount: number,
     firstItem?: string,
     attributeName?: string,
-    attributeValue?: string
+    attributeValue?: string,
+    indexName?: string
   ): Promise<{ items: object[]; lastItemReturned: string | undefined }>;
 }

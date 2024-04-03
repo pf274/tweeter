@@ -28,7 +28,7 @@ export class DDBFeedFactory extends AbstractFeedFactory {
         receiver_handles.map((receiver_handle) => {
           return this.dao.save("receiver_handle", receiver_handle, {
             ...status.dto,
-            timestamp: Date.now(),
+            timestamp: Date.now().toString(),
           });
         })
       );

@@ -9,10 +9,7 @@ import { GetFolloweesRequest } from "../../utils/shared-models/requests/GetFollo
 import { GetFolloweesResponse } from "../../utils/shared-models/responses/GetFolloweesResponse";
 import { GetStoriesRequest } from "../../utils/shared-models/requests/GetStoriesRequest";
 import { GetStoriesResponse } from "../../utils/shared-models/responses/GetStoriesResponse";
-import {
-  AuthToken,
-  AuthTokenDTO,
-} from "../../utils/shared-models/domain/AuthToken";
+import { AuthToken, AuthTokenDTO } from "../../utils/shared-models/domain/AuthToken";
 import { User, UserDTO } from "../../utils/shared-models/domain/User";
 import { Status, StatusDTO } from "../../utils/shared-models/domain/Status";
 module.exports.handler = basicApiHandler("itemload", [
@@ -22,18 +19,12 @@ module.exports.handler = basicApiHandler("itemload", [
   ApiRoute.get("/items/stories", handleGetStories),
 ]);
 
-async function handleGetFollowers(
-  requestInfo: ApiRequestInfo
-): Promise<GetFollowersResponse> {
+async function handleGetFollowers(requestInfo: ApiRequestInfo): Promise<GetFollowersResponse> {
   const request: GetFollowersRequest = {
-    authToken: JSON.parse(
-      requestInfo.queryParameters.authToken
-    ) as AuthTokenDTO,
+    authToken: JSON.parse(requestInfo.queryParameters.authToken) as AuthTokenDTO,
     user: JSON.parse(requestInfo.queryParameters.user) as UserDTO,
-    pageSize: requestInfo.queryParameters.pageSize as number,
-    lastItem: JSON.parse(
-      requestInfo.queryParameters.lastItem
-    ) as UserDTO | null,
+    pageSize: parseInt(requestInfo.queryParameters.pageSize),
+    lastItem: JSON.parse(requestInfo.queryParameters.lastItem) as UserDTO | null,
   };
   console.log("Handling get followers request:", request);
   const response = await ItemLoadService.loadMoreFollowers(
@@ -48,18 +39,12 @@ async function handleGetFollowers(
   };
 }
 
-async function handleGetFollowees(
-  requestInfo: ApiRequestInfo
-): Promise<GetFolloweesResponse> {
+async function handleGetFollowees(requestInfo: ApiRequestInfo): Promise<GetFolloweesResponse> {
   const request: GetFolloweesRequest = {
-    authToken: JSON.parse(
-      requestInfo.queryParameters.authToken
-    ) as AuthTokenDTO,
+    authToken: JSON.parse(requestInfo.queryParameters.authToken) as AuthTokenDTO,
     user: JSON.parse(requestInfo.queryParameters.user) as UserDTO,
-    pageSize: requestInfo.queryParameters.pageSize as number,
-    lastItem: JSON.parse(
-      requestInfo.queryParameters.lastItem
-    ) as UserDTO | null,
+    pageSize: parseInt(requestInfo.queryParameters.pageSize),
+    lastItem: JSON.parse(requestInfo.queryParameters.lastItem) as UserDTO | null,
   };
   console.log("Handling get followees request:", request);
   const response = await ItemLoadService.loadMoreFollowees(
@@ -74,18 +59,12 @@ async function handleGetFollowees(
   };
 }
 
-async function handleGetFeed(
-  requestInfo: ApiRequestInfo
-): Promise<GetFeedResponse> {
+async function handleGetFeed(requestInfo: ApiRequestInfo): Promise<GetFeedResponse> {
   const request: GetFeedRequest = {
-    authToken: JSON.parse(
-      requestInfo.queryParameters.authToken
-    ) as AuthTokenDTO,
+    authToken: JSON.parse(requestInfo.queryParameters.authToken) as AuthTokenDTO,
     user: JSON.parse(requestInfo.queryParameters.user) as UserDTO,
-    pageSize: requestInfo.queryParameters.pageSize as number,
-    lastItem: JSON.parse(
-      requestInfo.queryParameters.lastItem
-    ) as StatusDTO | null,
+    pageSize: parseInt(requestInfo.queryParameters.pageSize),
+    lastItem: JSON.parse(requestInfo.queryParameters.lastItem) as StatusDTO | null,
   };
   console.log("Handling get feed request:", request);
   const response = await ItemLoadService.loadMoreFeedItems(
@@ -100,18 +79,12 @@ async function handleGetFeed(
   };
 }
 
-async function handleGetStories(
-  requestInfo: ApiRequestInfo
-): Promise<GetStoriesResponse> {
+async function handleGetStories(requestInfo: ApiRequestInfo): Promise<GetStoriesResponse> {
   const request: GetStoriesRequest = {
-    authToken: JSON.parse(
-      requestInfo.queryParameters.authToken
-    ) as AuthTokenDTO,
+    authToken: JSON.parse(requestInfo.queryParameters.authToken) as AuthTokenDTO,
     user: JSON.parse(requestInfo.queryParameters.user) as UserDTO,
-    pageSize: requestInfo.queryParameters.pageSize as number,
-    lastItem: JSON.parse(
-      requestInfo.queryParameters.lastItem
-    ) as StatusDTO | null,
+    pageSize: parseInt(requestInfo.queryParameters.pageSize),
+    lastItem: JSON.parse(requestInfo.queryParameters.lastItem) as StatusDTO | null,
   };
   console.log("Handling get stories request:", request);
   const response = await ItemLoadService.loadMoreStoryItems(

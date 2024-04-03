@@ -26,7 +26,7 @@ export class DDBStoryFactory extends AbstractStoryFactory {
     try {
       await this.dao.save("sender_handle", sender_handle, {
         ...status.dto,
-        timestamp: Date.now(),
+        timestamp: Date.now().toString(),
       });
       return true;
     } catch (err) {

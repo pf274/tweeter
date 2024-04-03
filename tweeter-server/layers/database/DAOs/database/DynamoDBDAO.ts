@@ -49,7 +49,8 @@ export class DynamoDBDAO implements DatabaseDAO {
     maxCount: number,
     firstItem?: string,
     attributeName?: string,
-    attributeValue?: string
+    attributeValue?: string,
+    indexName?: string
   ): Promise<{ items: object[]; lastItemReturned: string | undefined }> {
     try {
       const params: QueryCommandInput = {
@@ -58,24 +59,23 @@ export class DynamoDBDAO implements DatabaseDAO {
         ExclusiveStartKey: firstItem ? {} : undefined,
       };
       if (attributeValue && attributeName) {
+        if (indexName) {
+          params.IndexName = indexName;
+        }
         params.KeyConditionExpression = `${attributeName} = :value`;
         params.ExpressionAttributeValues = {
-          ":value": {
-            S: attributeValue,
-          },
+          ":value": attributeValue,
         };
       }
       if (firstItem && attributeName) {
         params.ExclusiveStartKey = {
-          [attributeName]: {
-            S: firstItem,
-          },
+          [attributeName]: firstItem,
         };
       }
       const command = new QueryCommand(params);
       const result = await this.client.send(command);
       const items = result.Items as object[];
-      const lastItemReturned = result.LastEvaluatedKey?.S as string | undefined;
+      const lastItemReturned = result.LastEvaluatedKey as string | undefined;
       return { items, lastItemReturned };
     } catch (err) {
       console.error(err);
@@ -87,9 +87,7 @@ export class DynamoDBDAO implements DatabaseDAO {
       const params: DeleteCommandInput = {
         TableName: this.tableName,
         Key: {
-          [attributeName]: {
-            S: attributeValue,
-          },
+          [attributeName]: attributeValue,
         },
       };
       const command = new DeleteCommand(params);
@@ -109,15 +107,11 @@ export class DynamoDBDAO implements DatabaseDAO {
       const params: GetCommandInput = {
         TableName: this.tableName,
         Key: {
-          [attributeName]: {
-            S: attributeValue,
-          },
+          [attributeName]: attributeValue,
         },
       };
       if (secondaryAttributeName && secondaryAttributeValue) {
-        params.Key![secondaryAttributeName] = {
-          S: secondaryAttributeValue,
-        };
+        params.Key![secondaryAttributeName] = secondaryAttributeValue;
       }
       const command = new GetCommand(params);
       const results = await this.client.send(command);
@@ -133,9 +127,7 @@ export class DynamoDBDAO implements DatabaseDAO {
       const params: UpdateCommandInput = {
         TableName: this.tableName,
         Key: {
-          [attributeName]: {
-            S: attributeValue,
-          },
+          [attributeName]: attributeValue,
         },
         UpdateExpression: "set #data = :data",
         ExpressionAttributeNames: {

@@ -1,11 +1,5 @@
 import { Buffer } from "buffer";
-import {
-  AuthToken,
-  LoginResponse,
-  LogoutRequest,
-  RegisterResponse,
-  User,
-} from "tweeter-shared";
+import { AuthToken, LoginResponse, LogoutRequest, RegisterResponse, User } from "tweeter-shared";
 import { ServerFacade } from "../../network/ServerFacade";
 
 export class AuthenticationService {
@@ -35,10 +29,7 @@ export class AuthenticationService {
     return [User.fromDTO(response.user), AuthToken.fromDTO(response.authToken)];
   }
 
-  public async login(
-    alias: string,
-    password: string
-  ): Promise<[User, AuthToken]> {
+  public async login(alias: string, password: string): Promise<[User, AuthToken]> {
     const response: LoginResponse = await ServerFacade.login({
       username: alias,
       password,
