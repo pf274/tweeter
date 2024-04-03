@@ -1,8 +1,8 @@
 import { AuthToken } from "../../utils/shared-models/domain/AuthToken";
 import { User } from "../../utils/shared-models/domain/User";
 import { Status } from "../../utils/shared-models/domain/Status";
-import { FakeData } from "../../utils/FakeData";
 import { Service } from "./Service";
+import { ServiceError } from "../../utils/ServiceError";
 
 export class ItemLoadService extends Service {
   public static async loadMoreFollowers(
@@ -11,14 +11,16 @@ export class ItemLoadService extends Service {
     pageSize: number,
     lastItem: User | null
   ): Promise<{ users: User[]; hasMore: boolean }> {
-    await this.authTokenFactory.verifyAuthToken(authToken);
-    const { items, lastItem } = await this.followsFactory.getFollowers(blah);
-    const [users, hasMore] = FakeData.instance.getPageOfUsers(
-      lastItem ? lastItem : null,
+    const validToken = await this.authTokenFactory.validateAuthToken(authToken);
+    if (!validToken) {
+      throw new ServiceError(403, "Insufficient rights");
+    }
+    const { users, lastAlias } = await this.followsFactory.getFollowers(
+      user.alias,
       pageSize,
-      user
+      lastItem ? lastItem.alias : undefined
     );
-    return { users, hasMore };
+    return { users, hasMore: !!lastAlias };
   }
 
   public static async loadMoreFollowees(
@@ -27,8 +29,16 @@ export class ItemLoadService extends Service {
     pageSize: number,
     lastItem: User | null
   ): Promise<{ users: User[]; hasMore: boolean }> {
-    const [users, hasMore] = FakeData.instance.getPageOfUsers(lastItem, pageSize, user);
-    return { users, hasMore };
+    const validToken = await this.authTokenFactory.validateAuthToken(authToken);
+    if (!validToken) {
+      throw new ServiceError(403, "Insufficient rights");
+    }
+    const { users, lastAlias } = await this.followsFactory.getFollowees(
+      user.alias,
+      pageSize,
+      lastItem?.alias
+    );
+    return { users, hasMore: !!lastAlias };
   }
 
   static async loadMoreFeedItems(
@@ -37,8 +47,16 @@ export class ItemLoadService extends Service {
     pageSize: number,
     lastItem: Status | null
   ): Promise<{ statusItems: Status[]; hasMore: boolean }> {
-    const [feedItems, hasMore] = FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-    return { statusItems: feedItems, hasMore };
+    const validToken = await this.authTokenFactory.validateAuthToken(authToken);
+    if (!validToken) {
+      throw new ServiceError(403, "Insufficient rights");
+    }
+    const { feedItems, lastFeedItem } = await this.feedFactory.getFeedItems(
+      user.alias,
+      pageSize,
+      lastItem ? lastItem : undefined
+    );
+    return { statusItems: feedItems, hasMore: !!lastFeedItem };
   }
 
   static async loadMoreStoryItems(
@@ -47,7 +65,15 @@ export class ItemLoadService extends Service {
     pageSize: number,
     lastItem: Status | null
   ): Promise<{ statusItems: Status[]; hasMore: boolean }> {
-    const [statusItems, hasMore] = FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-    return { statusItems, hasMore };
+    const validToken = await this.authTokenFactory.validateAuthToken(authToken);
+    if (!validToken) {
+      throw new ServiceError(403, "Insufficient rights");
+    }
+    const { storyItems, lastStoryItem } = await this.storyFactory.getStoryItems(
+      user.alias,
+      pageSize,
+      lastItem ? lastItem : undefined
+    );
+    return { statusItems: storyItems, hasMore: !!lastStoryItem };
   }
 }

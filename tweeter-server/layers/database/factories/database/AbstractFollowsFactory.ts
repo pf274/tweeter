@@ -6,6 +6,14 @@ export abstract class AbstractFollowsFactory extends AbstractFactory<DatabaseDAO
   abstract getFollowers(
     alias: string,
     numFollowers: number,
-    firstAlias: string
+    firstAlias?: string
   ): Promise<{ users: User[]; lastAlias: string | undefined }>;
+
+  abstract getFollowees(
+    alias: string,
+    numFollowees: number,
+    firstAlias?: string
+  ): Promise<{ users: User[]; lastAlias: string | undefined }>;
+
+  abstract isFollower(alias: string, followerAlias: string): Promise<boolean>;
 }

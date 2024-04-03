@@ -8,8 +8,24 @@ export abstract class AbstractUserFactory extends AbstractFactory<DatabaseDAO> {
     password: string,
     firstName: string,
     lastName: string,
-    imageURL: string
+    imageURL: string,
+    numFollowers?: number,
+    numFollowees?: number
   ): Promise<User>;
 
   abstract checkCredentials(alias: string, password: string): Promise<User | null>;
+
+  abstract getUser(alias: string): Promise<User>;
+
+  abstract getFollowersCount(alias: string): Promise<number>;
+
+  abstract getFolloweesCount(alias: string): Promise<number>;
+
+  abstract incrementFollowersCount(alias: string): Promise<void>;
+
+  abstract decrementFollowersCount(alias: string): Promise<void>;
+
+  abstract incrementFolloweesCount(alias: string): Promise<void>;
+
+  abstract decrementFolloweesCount(alias: string): Promise<void>;
 }

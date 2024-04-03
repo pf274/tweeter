@@ -13,7 +13,9 @@ export class DDBUserFactory extends AbstractUserFactory {
     password: string,
     firstName: string,
     lastName: string,
-    imageURL: string
+    imageURL: string,
+    numFollowers?: number,
+    numFollowees?: number
   ): Promise<User> {
     const user: User = User.fromDTO({
       alias,
@@ -22,12 +24,16 @@ export class DDBUserFactory extends AbstractUserFactory {
       imageURL,
       encryptedPassword: await bcrypt.hash(password, 10),
     });
-    await this.dao.save("alias", alias, user.dto);
+    await this.dao.save("handle", alias, {
+      ...user.dto,
+      numFollowers: numFollowers || 0,
+      numFollowees: numFollowees || 0,
+    });
     return user;
   }
 
   async checkCredentials(alias: string, password: string): Promise<User | null> {
-    const data = await this.dao.get("alias", alias);
+    const data = await this.dao.get("handle", alias);
     const user: User = User.fromDTO(data as UserDTO);
     if (user === null) {
       return null;
@@ -36,5 +42,44 @@ export class DDBUserFactory extends AbstractUserFactory {
       return null;
     }
     return user;
+  }
+
+  async getUser(alias: string): Promise<User> {
+    const data = await this.dao.get("handle", alias);
+    return User.fromDTO(data as UserDTO);
+  }
+
+  async getFollowersCount(alias: string): Promise<number> {
+    const data = await this.dao.get("handle", alias);
+    return (data as { numFollowers: number }).numFollowers;
+  }
+
+  async getFolloweesCount(alias: string): Promise<number> {
+    const data = await this.dao.get("handle", alias);
+    return (data as { numFollowees: number }).numFollowees;
+  }
+
+  async incrementFollowersCount(alias: string): Promise<void> {
+    return this.getFollowersCount(alias).then((numFollowers) => {
+      this.dao.update("handle", alias, { numFollowers: numFollowers + 1 });
+    });
+  }
+
+  async decrementFollowersCount(alias: string): Promise<void> {
+    return this.getFollowersCount(alias).then((numFollowers) => {
+      this.dao.update("handle", alias, { numFollowers: numFollowers - 1 });
+    });
+  }
+
+  async incrementFolloweesCount(alias: string): Promise<void> {
+    return this.getFolloweesCount(alias).then((numFollowees) => {
+      this.dao.update("handle", alias, { numFollowees: numFollowees + 1 });
+    });
+  }
+
+  async decrementFolloweesCount(alias: string): Promise<void> {
+    return this.getFolloweesCount(alias).then((numFollowees) => {
+      this.dao.update("handle", alias, { numFollowees: numFollowees - 1 });
+    });
   }
 }

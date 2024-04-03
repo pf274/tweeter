@@ -13,6 +13,20 @@ export class DDBAuthTokenFactory extends AbstractAuthTokenFactory {
     return authToken;
   }
 
+  async validateAuthToken(authToken: AuthToken): Promise<boolean> {
+    try {
+      const entry = await this.dao.get("authToken", authToken.token);
+      if (entry) {
+        const authTokenDTO: AuthTokenDTO = entry as AuthTokenDTO;
+        return authTokenDTO.timestamp + 1000 * 60 * 60 * 24 > Date.now();
+      }
+      return false;
+    } catch (err) {
+      console.log(`Error validating auth token: ${err}`);
+      return false;
+    }
+  }
+
   async pruneExpiredAuthTokens(): Promise<void> {
     const allAuthTokens: object[] = [];
     let lastItem = undefined;
@@ -33,5 +47,9 @@ export class DDBAuthTokenFactory extends AbstractAuthTokenFactory {
         return this.dao.delete("authToken", authTokenDTO.token);
       })
     );
+  }
+
+  async deleteAuthToken(authToken: AuthToken): Promise<void> {
+    await this.dao.delete("authToken", authToken.token);
   }
 }

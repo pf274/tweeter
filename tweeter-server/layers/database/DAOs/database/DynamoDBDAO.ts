@@ -4,6 +4,7 @@ import {
   DeleteItemCommandInput,
   DynamoDBClient,
   GetItemCommand,
+  GetItemInput,
   PutItemCommand,
   PutItemCommandInput,
   QueryCommand,
@@ -97,18 +98,29 @@ export class DynamoDBDAO implements DatabaseDAO {
       throw new ServiceError(500, `Error deleting dynamodb item: ${(err as Error).message}`);
     }
   }
-  async get(attributeName: string, attributeValue: string): Promise<object> {
+  async get(
+    attributeName: string,
+    attributeValue: string,
+    secondaryAttributeName?: string,
+    secondaryAttributeValue?: string
+  ): Promise<object | null> {
     try {
-      const command = new GetItemCommand({
+      const params: GetItemInput = {
         TableName: this.tableName,
         Key: {
           [attributeName]: {
             S: attributeValue,
           },
         },
-      });
+      };
+      if (secondaryAttributeName && secondaryAttributeValue) {
+        params.Key![secondaryAttributeName] = {
+          S: secondaryAttributeValue,
+        };
+      }
+      const command = new GetItemCommand(params);
       const results = await this.client.send(command);
-      return results.Item as object;
+      return results.Item ? (results.Item as object) : null;
     } catch (err) {
       console.error(err);
       throw new ServiceError(500, `Error getting dynamodb item: ${(err as Error).message}`);
