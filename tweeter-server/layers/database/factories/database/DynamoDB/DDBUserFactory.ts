@@ -46,8 +46,8 @@ export class DDBUserFactory extends AbstractUserFactory {
 
   async getUser(alias: string): Promise<User | null> {
     const data: any = await this.dao.get("handle", alias);
-    data.encryptedPassword = "Private";
     if (data) {
+      data.encryptedPassword = "Private";
       return User.fromDTO(data as UserDTO);
     } else {
       return null;

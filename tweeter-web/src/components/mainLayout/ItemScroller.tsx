@@ -42,8 +42,7 @@ export function ItemScroller<
   // Load initial status items
   useEffect(() => {
     loadMoreItems();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loadMoreItems]);
 
   async function loadMoreItems() {
     presenter.loadMoreItems(authToken!, displayedUser!);

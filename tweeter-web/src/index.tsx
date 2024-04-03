@@ -14,13 +14,13 @@ const container = document.getElementById("root")!;
 const root = createRoot(container);
 
 root.render(
-  <React.StrictMode>
-    <UserInfoProvider>
-      <ToastProvider>
-        <UserNavigationProvider>
-          <App />
-        </UserNavigationProvider>
-      </ToastProvider>
-    </UserInfoProvider>
-  </React.StrictMode>
+  // <React.StrictMode> // https://flaviocopes.com/react-useeffect-two-times/
+  <UserInfoProvider>
+    <ToastProvider>
+      <UserNavigationProvider>
+        <App />
+      </UserNavigationProvider>
+    </ToastProvider>
+  </UserInfoProvider>
+  // </React.StrictMode>
 );

@@ -12,18 +12,15 @@ export class StatusService extends Service {
     const allFollowers = [];
     let lastKey = undefined;
     do {
-      const { users: followers, lastAlias } = await this.followsFactory.getFollowers(
+      const { usersAliases, lastAlias } = await this.followsFactory.getFollowers(
         status.user.alias,
         100,
         lastKey
       );
-      allFollowers.push(...followers);
+      allFollowers.push(...usersAliases);
       lastKey = lastAlias;
     } while (lastKey);
-    await this.feedFactory.postStatus(
-      allFollowers.map((user) => user.alias),
-      status
-    );
+    await this.feedFactory.postStatus(allFollowers, status);
     await this.storyFactory.postStatus(status.user.alias, status);
     return { successful: true };
   }
