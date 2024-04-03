@@ -18,7 +18,10 @@ export class DDBAuthTokenFactory extends AbstractAuthTokenFactory {
       const entry = await this.dao.get("authToken", authToken.token);
       if (entry) {
         const authTokenDTO: AuthTokenDTO = entry as AuthTokenDTO;
-        return authToken.timestamp + 1000 * 60 * 60 * 24 > Date.now(); // CHANGE BACK TO USING AUTHTOKENDTO
+        return (
+          authTokenDTO.timestamp + 1000 * 60 * 60 * 24 > Date.now() &&
+          authTokenDTO.timestamp == authToken.timestamp
+        );
       }
       return false;
     } catch (err) {
