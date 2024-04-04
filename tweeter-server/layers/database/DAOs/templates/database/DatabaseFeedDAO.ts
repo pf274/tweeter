@@ -1,10 +1,11 @@
 import { Status } from "../../../../../utils/shared-models/domain/Status";
-import { DynamoDBDAO } from "../../../DAOs/database/DynamoDBDAO";
-import { AbstractFeedFactory } from "../AbstractFeedFactory";
+import { AbstractDatabaseFunctions } from "../../../AccessFunctions/AbstractDatabaseFunctions";
+import { DatabaseDAO } from "../DatabaseDAO";
 
-export class DDBFeedFactory extends AbstractFeedFactory {
-  createDAO(): DynamoDBDAO {
-    return new DynamoDBDAO("feed");
+export abstract class DatabaseFeedDAO implements DatabaseDAO {
+  public dbFuncs: AbstractDatabaseFunctions;
+  constructor(dbFuncs: AbstractDatabaseFunctions) {
+    this.dbFuncs = dbFuncs;
   }
 
   async getFeedItems(
@@ -12,7 +13,7 @@ export class DDBFeedFactory extends AbstractFeedFactory {
     numFeedItems: number,
     lastFeedItem?: Status
   ): Promise<{ feedItems: Status[]; lastFeedItem: string | undefined }> {
-    const results = await this.dao.getMany(
+    const results = await this.dbFuncs.getMany(
       numFeedItems,
       lastFeedItem?.user?.alias,
       "receiver_handle",
@@ -24,13 +25,15 @@ export class DDBFeedFactory extends AbstractFeedFactory {
 
   async postStatus(receiver_handles: string[], status: Status): Promise<boolean> {
     try {
-      await Promise.all(
-        receiver_handles.map((receiver_handle) => {
-          return this.dao.save("receiver_handle", receiver_handle, {
+      await this.dbFuncs.saveMany(
+        receiver_handles.map((receiver_handle) => ({
+          attributeName: "receiver_handle",
+          attributeValue: receiver_handle,
+          data: {
             ...status.dto,
             timestamp: Date.now().toString(),
-          });
-        })
+          },
+        }))
       );
       return true;
     } catch (err) {

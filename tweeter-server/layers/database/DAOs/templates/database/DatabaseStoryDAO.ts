@@ -1,10 +1,11 @@
 import { Status } from "../../../../../utils/shared-models/domain/Status";
-import { DynamoDBDAO } from "../../../DAOs/database/DynamoDBDAO";
-import { AbstractStoryFactory } from "../AbstractStoryFactory";
+import { AbstractDatabaseFunctions } from "../../../AccessFunctions/AbstractDatabaseFunctions";
+import { DatabaseDAO } from "../DatabaseDAO";
 
-export class DDBStoryFactory extends AbstractStoryFactory {
-  createDAO(): DynamoDBDAO {
-    return new DynamoDBDAO("story");
+export abstract class DatabaseStoryDAO implements DatabaseDAO {
+  public dbFuncs: AbstractDatabaseFunctions;
+  constructor(dbFuncs: AbstractDatabaseFunctions) {
+    this.dbFuncs = dbFuncs;
   }
 
   async getStoryItems(
@@ -12,7 +13,7 @@ export class DDBStoryFactory extends AbstractStoryFactory {
     numStoryItems: number,
     lastStoryItem?: Status
   ): Promise<{ storyItems: Status[]; lastStoryItem: string | undefined }> {
-    const results = await this.dao.getMany(
+    const results = await this.dbFuncs.getMany(
       numStoryItems,
       lastStoryItem?.user?.alias,
       "sender_handle",
@@ -24,7 +25,7 @@ export class DDBStoryFactory extends AbstractStoryFactory {
 
   async postStatus(sender_handle: string, status: Status): Promise<boolean> {
     try {
-      await this.dao.save("sender_handle", sender_handle, {
+      await this.dbFuncs.save("sender_handle", sender_handle, {
         ...status.dto,
         timestamp: Date.now().toString(),
       });

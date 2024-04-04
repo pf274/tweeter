@@ -12,20 +12,20 @@ export class AuthenticationService extends Service {
     imageBytes: Uint8Array
   ): Promise<{ user: User; authToken: AuthToken }> {
     const formattedAlias = alias.startsWith("@") ? alias : `@${alias}`;
-    const prevUser = await this.userFactory.getUser(formattedAlias);
+    const prevUser = await this.db.userDAO.getUser(formattedAlias);
     if (prevUser) {
       throw new ServiceError(400, "Alias already taken");
     }
     const imageBuffer = Buffer.from(imageBytes);
-    const imageURL = await this.imageFactory.uploadImage(imageBuffer, formattedAlias);
-    const user = await this.userFactory.saveUser(
+    const imageURL = await this.storage.imageDAO.uploadImage(imageBuffer, formattedAlias);
+    const user = await this.db.userDAO.saveUser(
       formattedAlias,
       password,
       firstName,
       lastName,
       imageURL
     );
-    const authToken = await this.authTokenFactory.createAuthToken();
+    const authToken = await this.db.authTokenDAO.createAuthToken();
     return { user, authToken };
   }
 
@@ -34,11 +34,15 @@ export class AuthenticationService extends Service {
     password: string
   ): Promise<{ user: User; authToken: AuthToken }> {
     const formattedAlias = alias.startsWith("@") ? alias : `@${alias}`;
-    const user = await this.userFactory.checkCredentials(formattedAlias, password);
+    const user = await this.db.userDAO.checkCredentials(formattedAlias, password);
     if (!user) {
       throw new ServiceError(400, "Invalid alias or password");
     }
-    const authToken = await this.authTokenFactory.createAuthToken();
+    const authToken = await this.db.authTokenDAO.createAuthToken();
     return { user, authToken };
+  }
+
+  static async logout(authToken: AuthToken) {
+    await this.db.authTokenDAO.deleteAuthToken(authToken);
   }
 }

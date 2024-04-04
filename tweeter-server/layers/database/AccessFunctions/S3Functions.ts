@@ -1,7 +1,7 @@
 import { PutObjectCommand, PutObjectCommandInput, S3Client } from "@aws-sdk/client-s3";
-import { StorageDAO } from "../interfaces/StorageDAO";
+import { AbstractStorageFunctions } from "./AbstractStorageFunctions";
 
-export class S3DAO implements StorageDAO {
+export class S3Functions extends AbstractStorageFunctions {
   private bucketName: string;
   private _client: S3Client | null = null;
 
@@ -25,6 +25,7 @@ export class S3DAO implements StorageDAO {
   }
 
   public constructor(bucketName: string) {
+    super();
     this.bucketName = bucketName;
   }
 }

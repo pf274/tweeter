@@ -5,14 +5,14 @@ import { Service } from "./Service";
 
 export class StatusService extends Service {
   static async postStatus(authToken: AuthToken, status: Status): Promise<{ successful: boolean }> {
-    const validToken = await this.authTokenFactory.validateAuthToken(authToken);
+    const validToken = await this.db.authTokenDAO.validateAuthToken(authToken);
     if (!validToken) {
       throw new ServiceError(403, "Insufficient rights");
     }
     const allFollowers = [];
     let lastKey = undefined;
     do {
-      const { usersAliases, lastAlias } = await this.followsFactory.getFollowers(
+      const { usersAliases, lastAlias } = await this.db.followsDAO.getFollowers(
         status.user.alias,
         100,
         lastKey
@@ -20,8 +20,8 @@ export class StatusService extends Service {
       allFollowers.push(...usersAliases);
       lastKey = lastAlias;
     } while (lastKey);
-    await this.feedFactory.postStatus(allFollowers, status);
-    await this.storyFactory.postStatus(status.user.alias, status);
+    await this.db.feedDAO.postStatus(allFollowers, status);
+    await this.db.storyDAO.postStatus(status.user.alias, status);
     return { successful: true };
   }
 }

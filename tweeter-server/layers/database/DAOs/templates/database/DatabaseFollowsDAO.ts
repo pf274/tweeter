@@ -1,13 +1,14 @@
-import { DynamoDBDAO } from "../../../DAOs/database/DynamoDBDAO";
-import { AbstractFollowsFactory } from "../AbstractFollowsFactory";
+import { AbstractDatabaseFunctions } from "../../../AccessFunctions/AbstractDatabaseFunctions";
+import { DatabaseDAO } from "../DatabaseDAO";
 
-export class DDBFollowsFactory extends AbstractFollowsFactory {
-  createDAO(): DynamoDBDAO {
-    return new DynamoDBDAO("follows");
+export abstract class DatabaseFollowsDAO implements DatabaseDAO {
+  public dbFuncs: AbstractDatabaseFunctions;
+  constructor(dbFuncs: AbstractDatabaseFunctions) {
+    this.dbFuncs = dbFuncs;
   }
 
   async getFollowers(alias: string, numFollowers: number, firstAlias?: string) {
-    const { items, lastItemReturned } = await this.dao.getMany(
+    const { items, lastItemReturned } = await this.dbFuncs.getMany(
       numFollowers,
       firstAlias,
       "followee_handle",
@@ -19,7 +20,7 @@ export class DDBFollowsFactory extends AbstractFollowsFactory {
   }
 
   async getFollowees(alias: string, numFollowees: number, firstAlias?: string) {
-    const { items, lastItemReturned } = await this.dao.getMany(
+    const { items, lastItemReturned } = await this.dbFuncs.getMany(
       numFollowees,
       firstAlias,
       "follower_handle",
@@ -30,18 +31,23 @@ export class DDBFollowsFactory extends AbstractFollowsFactory {
   }
 
   async isFollower(alias: string, followerAlias: string) {
-    const result = await this.dao.get("follower_handle", followerAlias, "followee_handle", alias);
+    const result = await this.dbFuncs.get(
+      "follower_handle",
+      followerAlias,
+      "followee_handle",
+      alias
+    );
     return result !== null;
   }
 
   async follow(alias: string, followeeAlias: string) {
-    await this.dao.save("follower_handle", alias, {
+    await this.dbFuncs.save("follower_handle", alias, {
       followee_handle: followeeAlias,
       timestamp: Date.now().toString(),
     });
   }
 
   async unfollow(alias: string, followeeAlias: string) {
-    await this.dao.delete("follower_handle", alias, "followee_handle", followeeAlias);
+    await this.dbFuncs.delete("follower_handle", alias, "followee_handle", followeeAlias);
   }
 }

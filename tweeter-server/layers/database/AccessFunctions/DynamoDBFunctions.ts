@@ -1,6 +1,10 @@
-import { ServiceError } from "../../../../utils/ServiceError";
-import { DatabaseDAO } from "../interfaces/DatabaseDAO";
+import { ServiceError } from "../../../utils/ServiceError";
+import { AbstractDatabaseFunctions, TableEntry, SaveEntry } from "./AbstractDatabaseFunctions";
 import {
+  BatchGetCommand,
+  BatchGetCommandInput,
+  BatchWriteCommand,
+  BatchWriteCommandInput,
   DeleteCommand,
   DeleteCommandInput,
   DynamoDBDocumentClient,
@@ -10,13 +14,14 @@ import {
   PutCommandInput,
   QueryCommand,
   QueryCommandInput,
+  ScanCommand,
+  ScanCommandInput,
   UpdateCommand,
   UpdateCommandInput,
 } from "@aws-sdk/lib-dynamodb";
-import { DescribeTableCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
-export class DynamoDBDAO implements DatabaseDAO {
-  private tableName: string;
+export class DynamoDBFunctions extends AbstractDatabaseFunctions {
   private _client: DynamoDBDocumentClient | null = null;
 
   private get client(): DynamoDBDocumentClient {
@@ -27,7 +32,7 @@ export class DynamoDBDAO implements DatabaseDAO {
     return this._client;
   }
   public constructor(tableName: string) {
-    this.tableName = tableName;
+    super(tableName);
   }
   async save(attributeName: string, attributeValue: string, data: object): Promise<void> {
     try {
@@ -45,6 +50,36 @@ export class DynamoDBDAO implements DatabaseDAO {
       throw new ServiceError(500, `Error saving dynamodb item: ${(err as Error).message}`);
     }
   }
+
+  async getManySpecific(entries: TableEntry[]) {
+    try {
+      const params: BatchGetCommandInput = {
+        RequestItems: {
+          [this.tableName]: {
+            Keys: entries.map((entry) => {
+              const returnVal = {
+                [entry.attributeName]: entry.attributeValue,
+              };
+              if (entry.secondaryAttributeName && entry.secondaryAttributeValue) {
+                returnVal[entry.secondaryAttributeName] = entry.secondaryAttributeValue;
+              }
+              return returnVal;
+            }),
+          },
+        },
+      };
+      const command = new BatchGetCommand(params);
+      const results = await this.client.send(command);
+      return results.Responses![this.tableName] as object[];
+    } catch (err) {
+      console.error(err);
+      throw new ServiceError(
+        500,
+        `Error getting many specific dynamodb items: ${(err as Error).message}`
+      );
+    }
+  }
+
   async getMany(
     maxCount: number,
     firstItem?: string,
@@ -52,22 +87,34 @@ export class DynamoDBDAO implements DatabaseDAO {
     attributeValue?: string,
     indexName?: string
   ): Promise<{ items: object[]; lastItemReturned: string | undefined }> {
+    if (attributeName && attributeValue) {
+      return this.doQuery(maxCount, attributeName, attributeValue, firstItem, indexName);
+    } else {
+      return this.doScan(maxCount, firstItem);
+    }
+  }
+
+  async doQuery(
+    maxCount: number,
+    attributeName: string,
+    attributeValue: string,
+    firstItem?: string,
+    indexName?: string
+  ): Promise<{ items: object[]; lastItemReturned: string | undefined }> {
     try {
       const params: QueryCommandInput = {
         TableName: this.tableName,
         Limit: maxCount,
         ExclusiveStartKey: firstItem ? {} : undefined,
-      };
-      if (attributeValue && attributeName) {
-        if (indexName) {
-          params.IndexName = indexName;
-        }
-        params.KeyConditionExpression = `${attributeName} = :value`;
-        params.ExpressionAttributeValues = {
+        KeyConditionExpression: `${attributeName} = :value`,
+        ExpressionAttributeValues: {
           ":value": attributeValue,
-        };
+        },
+      };
+      if (indexName) {
+        params.IndexName = indexName;
       }
-      if (firstItem && attributeName) {
+      if (firstItem) {
         params.ExclusiveStartKey = {
           [attributeName]: firstItem,
         };
@@ -82,6 +129,32 @@ export class DynamoDBDAO implements DatabaseDAO {
       throw new ServiceError(500, `Error querying dynamodb items: ${(err as Error).message}`);
     }
   }
+
+  async doScan(
+    maxCount: number,
+    firstItem?: string
+  ): Promise<{ items: object[]; lastItemReturned: string | undefined }> {
+    try {
+      const params: ScanCommandInput = {
+        TableName: this.tableName,
+        Limit: maxCount,
+      };
+      if (firstItem) {
+        params.ExclusiveStartKey = {
+          [this.tableName]: firstItem,
+        };
+      }
+      const command = new ScanCommand(params);
+      const result = await this.client.send(command);
+      const items = result.Items as object[];
+      const lastItemReturned = result.LastEvaluatedKey as string | undefined;
+      return { items, lastItemReturned };
+    } catch (err) {
+      console.error(err);
+      throw new ServiceError(500, `Error scanning dynamodb items: ${(err as Error).message}`);
+    }
+  }
+
   async delete(
     attributeName: string,
     attributeValue: string,
@@ -151,6 +224,56 @@ export class DynamoDBDAO implements DatabaseDAO {
     } catch (err) {
       console.error(err);
       throw new ServiceError(500, `Error updating dynamodb item: ${(err as Error).message}`);
+    }
+  }
+
+  async saveMany(data: SaveEntry[]) {
+    try {
+      const params: BatchWriteCommandInput = {
+        RequestItems: {
+          [this.tableName]: data.map((entry) => ({
+            PutRequest: {
+              Item: {
+                ...entry.data,
+                [entry.attributeName]: entry.attributeValue,
+              },
+            },
+          })),
+        },
+      };
+      const command = new BatchWriteCommand(params);
+      await this.client.send(command);
+    } catch (err) {
+      console.error(err);
+      throw new ServiceError(500, `Error saving dynamodb items: ${(err as Error).message}`);
+    }
+  }
+
+  async deleteMany(data: TableEntry[]) {
+    try {
+      const params: BatchWriteCommandInput = {
+        RequestItems: {
+          [this.tableName]: data.map((entry) => {
+            const returnVal = {
+              DeleteRequest: {
+                Key: {
+                  [entry.attributeName]: entry.attributeValue,
+                },
+              },
+            };
+            if (entry.secondaryAttributeName && entry.secondaryAttributeValue) {
+              returnVal.DeleteRequest!.Key[entry.secondaryAttributeName] =
+                entry.secondaryAttributeValue;
+            }
+            return returnVal;
+          }),
+        },
+      };
+      const command = new BatchWriteCommand(params);
+      await this.client.send(command);
+    } catch (err) {
+      console.error(err);
+      throw new ServiceError(500, `Error deleting dynamodb items: ${(err as Error).message}`);
     }
   }
 }

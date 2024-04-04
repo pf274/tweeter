@@ -7,6 +7,7 @@ import { LogoutResponse } from "../../utils/shared-models/responses/LogoutRespon
 import { ApiRequestInfo, ApiRoute } from "../../types/ApiRoutes";
 import { basicApiHandler } from "../../utils/ApiHelpers";
 import { AuthenticationService } from "../services/authenticationService";
+import { AuthToken } from "../../utils/shared-models/domain/AuthToken";
 
 module.exports.handler = basicApiHandler("authentication", [
   ApiRoute.post("/auth/login", handleLogin),
@@ -44,6 +45,6 @@ async function handleRegister(requestInfo: ApiRequestInfo): Promise<RegisterResp
 async function handleLogout(requestInfo: ApiRequestInfo): Promise<LogoutResponse> {
   console.log("Handling logout request:", requestInfo);
   const request: LogoutRequest = JSON.parse(requestInfo.body);
-  // await AuthenticationService.logout(requestInfo.authToken);
+  await AuthenticationService.logout(AuthToken.fromDTO(request.authToken));
   return { successful: true };
 }

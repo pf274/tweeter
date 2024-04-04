@@ -5,26 +5,23 @@ import { Service } from "./Service";
 import { ServiceError } from "../../utils/ServiceError";
 
 export class ItemLoadService extends Service {
+  // TODO: Remove code duplication in this class
   public static async loadMoreFollowers(
     authToken: AuthToken,
     user: User,
     pageSize: number,
     lastItem: User | null
   ): Promise<{ users: User[]; hasMore: boolean }> {
-    const validToken = await this.authTokenFactory.validateAuthToken(authToken);
+    const validToken = await this.db.authTokenDAO.validateAuthToken(authToken);
     if (!validToken) {
       throw new ServiceError(403, "Insufficient rights");
     }
-    const { usersAliases, lastAlias } = await this.followsFactory.getFollowers(
+    const { usersAliases, lastAlias } = await this.db.followsDAO.getFollowers(
       user.alias,
       pageSize,
-      lastItem ? lastItem.alias : undefined
+      lastItem?.alias
     );
-    const users = await Promise.all(
-      usersAliases.map(async (alias) => {
-        return await this.userFactory.getUser(alias);
-      })
-    );
+    const users = await this.db.userDAO.getUsers(usersAliases);
     const filteredUsers: User[] = users.filter((user) => user !== null) as User[];
     return { users: filteredUsers, hasMore: !!lastAlias };
   }
@@ -35,20 +32,16 @@ export class ItemLoadService extends Service {
     pageSize: number,
     lastItem: User | null
   ): Promise<{ users: User[]; hasMore: boolean }> {
-    const validToken = await this.authTokenFactory.validateAuthToken(authToken);
+    const validToken = await this.db.authTokenDAO.validateAuthToken(authToken);
     if (!validToken) {
       throw new ServiceError(403, "Insufficient rights");
     }
-    const { usersAliases, lastAlias } = await this.followsFactory.getFollowees(
+    const { usersAliases, lastAlias } = await this.db.followsDAO.getFollowees(
       user.alias,
       pageSize,
       lastItem?.alias
     );
-    const users = await Promise.all(
-      usersAliases.map(async (alias) => {
-        return await this.userFactory.getUser(alias);
-      })
-    );
+    const users = await this.db.userDAO.getUsers(usersAliases);
     const filteredUsers: User[] = users.filter((user) => user !== null) as User[];
     return { users: filteredUsers, hasMore: !!lastAlias };
   }
@@ -59,11 +52,11 @@ export class ItemLoadService extends Service {
     pageSize: number,
     lastItem: Status | null
   ): Promise<{ statusItems: Status[]; hasMore: boolean }> {
-    const validToken = await this.authTokenFactory.validateAuthToken(authToken);
+    const validToken = await this.db.authTokenDAO.validateAuthToken(authToken);
     if (!validToken) {
       throw new ServiceError(403, "Insufficient rights");
     }
-    const { feedItems, lastFeedItem } = await this.feedFactory.getFeedItems(
+    const { feedItems, lastFeedItem } = await this.db.feedDAO.getFeedItems(
       user.alias,
       pageSize,
       lastItem ? lastItem : undefined
@@ -77,11 +70,11 @@ export class ItemLoadService extends Service {
     pageSize: number,
     lastItem: Status | null
   ): Promise<{ statusItems: Status[]; hasMore: boolean }> {
-    const validToken = await this.authTokenFactory.validateAuthToken(authToken);
+    const validToken = await this.db.authTokenDAO.validateAuthToken(authToken);
     if (!validToken) {
       throw new ServiceError(403, "Insufficient rights");
     }
-    const { storyItems, lastStoryItem } = await this.storyFactory.getStoryItems(
+    const { storyItems, lastStoryItem } = await this.db.storyDAO.getStoryItems(
       user.alias,
       pageSize,
       lastItem ? lastItem : undefined

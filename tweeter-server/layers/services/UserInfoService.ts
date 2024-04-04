@@ -8,11 +8,11 @@ export class UserInfoService extends Service {
     authToken: AuthToken,
     alias: string
   ): Promise<{ user: User | null }> {
-    const isValidToken = await this.authTokenFactory.validateAuthToken(authToken);
+    const isValidToken = await this.db.authTokenDAO.validateAuthToken(authToken);
     if (!isValidToken) {
       throw new ServiceError(403, "Insufficient rights");
     }
-    const user = await this.userFactory.getUser(alias);
+    const user = await this.db.userDAO.getUser(alias);
     return { user };
   }
 
@@ -20,11 +20,11 @@ export class UserInfoService extends Service {
     authToken: AuthToken,
     user: User
   ): Promise<{ count: number }> {
-    const isValidToken = await this.authTokenFactory.validateAuthToken(authToken);
+    const isValidToken = await this.db.authTokenDAO.validateAuthToken(authToken);
     if (!isValidToken) {
       throw new ServiceError(403, "Insufficient rights");
     }
-    const count = await this.userFactory.getFollowersCount(user.alias);
+    const count = await this.db.userDAO.getFollowersCount(user.alias);
     return { count };
   }
 
@@ -32,11 +32,11 @@ export class UserInfoService extends Service {
     authToken: AuthToken,
     user: User
   ): Promise<{ count: number }> {
-    const isValidToken = await this.authTokenFactory.validateAuthToken(authToken);
+    const isValidToken = await this.db.authTokenDAO.validateAuthToken(authToken);
     if (!isValidToken) {
       throw new ServiceError(403, "Insufficient rights");
     }
-    const count = await this.userFactory.getFolloweesCount(user.alias);
+    const count = await this.db.userDAO.getFolloweesCount(user.alias);
     return { count };
   }
 
@@ -45,11 +45,11 @@ export class UserInfoService extends Service {
     user: User,
     selectedUser: User
   ): Promise<{ isFollower: boolean }> {
-    const isValidToken = await this.authTokenFactory.validateAuthToken(authToken);
+    const isValidToken = await this.db.authTokenDAO.validateAuthToken(authToken);
     if (!isValidToken) {
       throw new ServiceError(403, "Insufficient rights");
     }
-    const isFollower = await this.followsFactory.isFollower(user.alias, selectedUser.alias);
+    const isFollower = await this.db.followsDAO.isFollower(user.alias, selectedUser.alias);
     return { isFollower };
   }
 
@@ -58,8 +58,8 @@ export class UserInfoService extends Service {
     currentUser: User,
     userToFollow: User
   ): Promise<{ followersCount: number; followeesCount: number }> {
-    await this.userFactory.incrementFolloweesCount(userToFollow.alias);
-    await this.followsFactory.follow(currentUser.alias, userToFollow.alias);
+    await this.db.userDAO.incrementFolloweesCount(userToFollow.alias);
+    await this.db.followsDAO.follow(currentUser.alias, userToFollow.alias);
     const { count: followersCount } = await this.getFollowersCount(authToken, userToFollow);
     const { count: followeesCount } = await this.getFolloweesCount(authToken, userToFollow);
     return { followersCount, followeesCount };
@@ -70,8 +70,8 @@ export class UserInfoService extends Service {
     currentUser: User,
     userToUnfollow: User
   ): Promise<{ followersCount: number; followeesCount: number }> {
-    await this.followsFactory.unfollow(currentUser.alias, userToUnfollow.alias);
-    await this.userFactory.decrementFolloweesCount(userToUnfollow.alias);
+    await this.db.followsDAO.unfollow(currentUser.alias, userToUnfollow.alias);
+    await this.db.userDAO.decrementFolloweesCount(userToUnfollow.alias);
     const { count: followersCount } = await this.getFollowersCount(authToken, userToUnfollow);
     const { count: followeesCount } = await this.getFolloweesCount(authToken, userToUnfollow);
     return { followersCount, followeesCount };

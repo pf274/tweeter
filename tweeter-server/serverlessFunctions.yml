@@ -1,5 +1,3 @@
-routeAuthorizer:
-  handler: layers/handlers/authorizer.handler
 authentication:
   handler: layers/handlers/authentication.handler
   events:
@@ -22,22 +20,18 @@ itemload:
         path: /items/followers
         method: get
         cors: true
-        # authorizer: "routeAuthorizer"
     - http:
         path: /items/followees
         method: get
         cors: true
-        # authorizer: "routeAuthorizer"
     - http:
         path: /items/feed
         method: get
         cors: true
-        # authorizer: "routeAuthorizer"
     - http:
         path: /items/stories
         method: get
         cors: true
-        # authorizer: "routeAuthorizer"
 userinfo:
   handler: layers/handlers/userinfo.handler
   events:
@@ -45,32 +39,26 @@ userinfo:
         path: /user/get
         method: get
         cors: true
-        # authorizer: "routeAuthorizer"
     - http:
         path: /user/followersCount
         method: get
         cors: true
-        # authorizer: "routeAuthorizer"
     - http:
         path: /user/followeesCount
         method: get
         cors: true
-        # authorizer: "routeAuthorizer"
     - http:
         path: /user/isFollower
         method: get
         cors: true
-        # authorizer: "routeAuthorizer"
     - http:
         path: /user/follow
         method: post
         cors: true
-        # authorizer: "routeAuthorizer"
     - http:
         path: /user/unfollow
         method: post
         cors: true
-        # authorizer: "routeAuthorizer"
 status:
   handler: layers/handlers/status.handler
   events:
@@ -78,4 +66,3 @@ status:
         path: /status
         method: post
         cors: true
-        # authorizer: "routeAuthorizer"

@@ -1,11 +1,12 @@
 import { User, UserDTO } from "../../../../../utils/shared-models/domain/User";
-import { DynamoDBDAO } from "../../../DAOs/database/DynamoDBDAO";
-import { AbstractUserFactory } from "../AbstractUserFactory";
+import { AbstractDatabaseFunctions } from "../../../AccessFunctions/AbstractDatabaseFunctions";
+import { DatabaseDAO } from "../DatabaseDAO";
 import bcrypt from "bcrypt";
 
-export class DDBUserFactory extends AbstractUserFactory {
-  createDAO(): DynamoDBDAO {
-    return new DynamoDBDAO("user");
+export abstract class DatabaseUserDAO implements DatabaseDAO {
+  public dbFuncs: AbstractDatabaseFunctions;
+  constructor(dbFuncs: AbstractDatabaseFunctions) {
+    this.dbFuncs = dbFuncs;
   }
 
   async saveUser(
@@ -24,7 +25,7 @@ export class DDBUserFactory extends AbstractUserFactory {
       imageURL,
       encryptedPassword: await bcrypt.hash(password, 10),
     });
-    await this.dao.save("handle", alias, {
+    await this.dbFuncs.save("handle", alias, {
       ...user.dto,
       numFollowers: numFollowers || 0,
       numFollowees: numFollowees || 0,
@@ -33,7 +34,7 @@ export class DDBUserFactory extends AbstractUserFactory {
   }
 
   async checkCredentials(alias: string, password: string): Promise<User | null> {
-    const data = await this.dao.get("handle", alias);
+    const data = await this.dbFuncs.get("handle", alias);
     if (data === null) {
       return null;
     }
@@ -45,7 +46,7 @@ export class DDBUserFactory extends AbstractUserFactory {
   }
 
   async getUser(alias: string): Promise<User | null> {
-    const data: any = await this.dao.get("handle", alias);
+    const data: any = await this.dbFuncs.get("handle", alias);
     if (data) {
       data.encryptedPassword = "Private";
       return User.fromDTO(data as UserDTO);
@@ -54,37 +55,46 @@ export class DDBUserFactory extends AbstractUserFactory {
     }
   }
 
+  async getUsers(usersAliases: string[]): Promise<User[]> {
+    const data = await this.dbFuncs.getManySpecific(
+      usersAliases.map((alias) => ({ attributeName: "handle", attributeValue: alias }))
+    );
+    return data.map((user: any) =>
+      User.fromDTO({ ...user, encryptedPassword: "Private" } as UserDTO)
+    );
+  }
+
   async getFollowersCount(alias: string): Promise<number> {
-    const data = await this.dao.get("handle", alias);
+    const data = await this.dbFuncs.get("handle", alias);
     return (data as { numFollowers: number }).numFollowers;
   }
 
   async getFolloweesCount(alias: string): Promise<number> {
-    const data = await this.dao.get("handle", alias);
+    const data = await this.dbFuncs.get("handle", alias);
     return (data as { numFollowees: number }).numFollowees;
   }
 
   async incrementFollowersCount(alias: string): Promise<void> {
     return this.getFollowersCount(alias).then((numFollowers) => {
-      this.dao.update("handle", alias, { numFollowers: numFollowers + 1 });
+      this.dbFuncs.update("handle", alias, { numFollowers: numFollowers + 1 });
     });
   }
 
   async decrementFollowersCount(alias: string): Promise<void> {
     return this.getFollowersCount(alias).then((numFollowers) => {
-      this.dao.update("handle", alias, { numFollowers: numFollowers - 1 });
+      this.dbFuncs.update("handle", alias, { numFollowers: numFollowers - 1 });
     });
   }
 
   async incrementFolloweesCount(alias: string): Promise<void> {
     return this.getFolloweesCount(alias).then((numFollowees) => {
-      this.dao.update("handle", alias, { numFollowees: numFollowees + 1 });
+      this.dbFuncs.update("handle", alias, { numFollowees: numFollowees + 1 });
     });
   }
 
   async decrementFolloweesCount(alias: string): Promise<void> {
     return this.getFolloweesCount(alias).then((numFollowees) => {
-      this.dao.update("handle", alias, { numFollowees: numFollowees - 1 });
+      this.dbFuncs.update("handle", alias, { numFollowees: numFollowees - 1 });
     });
   }
 }
