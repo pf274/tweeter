@@ -5,7 +5,6 @@ import { Service } from "./Service";
 import { ServiceError } from "../../utils/ServiceError";
 
 export class ItemLoadService extends Service {
-  // TODO: Remove code duplication in this class
   public static async loadMoreFollowers(
     authToken: AuthToken,
     user: User,
