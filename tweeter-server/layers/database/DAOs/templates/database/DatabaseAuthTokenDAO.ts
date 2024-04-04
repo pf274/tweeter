@@ -47,6 +47,9 @@ export abstract class DatabaseAuthTokenDAO implements DatabaseDAO {
           return true;
         }
       });
+      if (expiredTokens.length == 0) {
+        return;
+      }
       await this.dbFuncs.deleteMany(
         expiredTokens.map((token: any) => ({
           attributeName: "authToken",

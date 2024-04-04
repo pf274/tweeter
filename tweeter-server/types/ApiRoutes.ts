@@ -1,5 +1,6 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { getRequestInfo } from "../utils/ApiHelpers";
+import chalk from "chalk";
 
 export enum methodType {
   get = "get",
@@ -34,10 +35,13 @@ export class ApiRoute {
 
   async handle(event: APIGatewayProxyEvent): Promise<string> {
     const requestInfo = getRequestInfo(event);
+    console.log(`\x1b[32m${event.path}\x1b[37m Request:\x1b[0m`, requestInfo);
     const response = await this._handler(requestInfo);
     if (typeof response === "string") {
+      console.log(`\x1b[36m${event.path}\x1b[37m Response:\x1b[0m"${response}"`);
       return response;
     } else {
+      console.log(`\x1b[36m${event.path}\x1b[37m Response:\x1b[0m`, response);
       return JSON.stringify(response);
     }
   }

@@ -17,7 +17,6 @@ module.exports.handler = basicApiHandler("authentication", [
 
 async function handleLogin(requestInfo: ApiRequestInfo): Promise<LoginResponse> {
   const request: LoginRequest = JSON.parse(requestInfo.body);
-  console.log("Handling login request:", request);
   const response = await AuthenticationService.login(request.username, request.password);
   return {
     authToken: response.authToken.dto,
@@ -27,7 +26,6 @@ async function handleLogin(requestInfo: ApiRequestInfo): Promise<LoginResponse> 
 
 async function handleRegister(requestInfo: ApiRequestInfo): Promise<RegisterResponse> {
   const request: RegisterRequest = JSON.parse(requestInfo.body);
-  console.log("Handling register request:", request);
   const imageBytes: Uint8Array = Buffer.from(request.imageStringBase64, "base64");
   const response = await AuthenticationService.register(
     request.alias,
@@ -43,7 +41,6 @@ async function handleRegister(requestInfo: ApiRequestInfo): Promise<RegisterResp
 }
 
 async function handleLogout(requestInfo: ApiRequestInfo): Promise<LogoutResponse> {
-  console.log("Handling logout request:", requestInfo);
   const request: LogoutRequest = JSON.parse(requestInfo.body);
   await AuthenticationService.logout(AuthToken.fromDTO(request.authToken));
   return { successful: true };

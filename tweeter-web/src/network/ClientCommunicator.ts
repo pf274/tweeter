@@ -12,10 +12,7 @@ export class ClientCommunicator {
     this.SERVER_URL = serverUrl;
   }
 
-  async doRequest<
-    RequestType extends TweeterRequest,
-    ResponseType extends TweeterResponse
-  >(
+  async doRequest<RequestType extends TweeterRequest, ResponseType extends TweeterResponse>(
     request: RequestType,
     endpoint: string,
     method: "GET" | "POST" | "DELETE"
@@ -54,12 +51,10 @@ export class ClientCommunicator {
           statusCode: response.status,
           message: data.message || `Unknown error: ${JSON.stringify(response)}`,
         };
-        throw new Error(JSON.stringify(error)); // TODO: replace with service error
+        throw new Error(JSON.stringify(error));
       }
     } catch (err) {
-      throw new Error(
-        `Client communicator doRequest failed:\n${(err as Error).message}`
-      );
+      throw new Error(`Client communicator doRequest failed:\n${(err as Error).message}`);
     }
   }
 }

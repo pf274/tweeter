@@ -26,7 +26,6 @@ async function handleGetFollowers(requestInfo: ApiRequestInfo): Promise<GetFollo
     pageSize: parseInt(requestInfo.queryParameters.pageSize),
     lastItem: JSON.parse(requestInfo.queryParameters.lastItem) as UserDTO | null,
   };
-  console.log("Handling get followers request:", request);
   const response = await ItemLoadService.loadMoreFollowers(
     AuthToken.fromDTO(request.authToken),
     User.fromDTO(request.user),
@@ -46,7 +45,6 @@ async function handleGetFollowees(requestInfo: ApiRequestInfo): Promise<GetFollo
     pageSize: parseInt(requestInfo.queryParameters.pageSize),
     lastItem: JSON.parse(requestInfo.queryParameters.lastItem) as UserDTO | null,
   };
-  console.log("Handling get followees request:", request);
   const response = await ItemLoadService.loadMoreFollowees(
     AuthToken.fromDTO(request.authToken),
     User.fromDTO(request.user),
@@ -66,7 +64,6 @@ async function handleGetFeed(requestInfo: ApiRequestInfo): Promise<GetFeedRespon
     pageSize: parseInt(requestInfo.queryParameters.pageSize),
     lastItem: JSON.parse(requestInfo.queryParameters.lastItem) as StatusDTO | null,
   };
-  console.log("Handling get feed request:", request);
   const response = await ItemLoadService.loadMoreFeedItems(
     AuthToken.fromDTO(request.authToken),
     User.fromDTO(request.user),
@@ -86,7 +83,6 @@ async function handleGetStories(requestInfo: ApiRequestInfo): Promise<GetStories
     pageSize: parseInt(requestInfo.queryParameters.pageSize),
     lastItem: JSON.parse(requestInfo.queryParameters.lastItem) as StatusDTO | null,
   };
-  console.log("Handling get stories request:", request);
   const response = await ItemLoadService.loadMoreStoryItems(
     AuthToken.fromDTO(request.authToken),
     User.fromDTO(request.user),

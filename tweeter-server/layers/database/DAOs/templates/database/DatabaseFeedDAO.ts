@@ -11,11 +11,11 @@ export abstract class DatabaseFeedDAO implements DatabaseDAO {
   async getFeedItems(
     alias: string,
     numFeedItems: number,
-    lastFeedItem?: Status
+    firstFeedItem?: Status
   ): Promise<{ feedItems: Status[]; lastFeedItem: string | undefined }> {
     const results = await this.dbFuncs.getMany(
       numFeedItems,
-      lastFeedItem?.user?.alias,
+      firstFeedItem?.user?.alias,
       "receiver_handle",
       alias
     );

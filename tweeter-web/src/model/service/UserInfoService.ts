@@ -23,11 +23,7 @@ export class UserInfoService {
     localStorage.removeItem(AUTH_TOKEN_KEY);
   }
 
-  public async getUserByAlias(
-    authToken: AuthToken,
-    alias: string
-  ): Promise<User | null> {
-    // TODO: Replace with the result of calling server
+  public async getUserByAlias(authToken: AuthToken, alias: string): Promise<User | null> {
     const request: GetUserByAliasRequest = {
       authToken: authToken.dto,
       alias,

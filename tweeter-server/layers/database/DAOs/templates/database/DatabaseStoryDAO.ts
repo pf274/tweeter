@@ -11,11 +11,11 @@ export abstract class DatabaseStoryDAO implements DatabaseDAO {
   async getStoryItems(
     alias: string,
     numStoryItems: number,
-    lastStoryItem?: Status
+    firstStoryItem?: Status
   ): Promise<{ storyItems: Status[]; lastStoryItem: string | undefined }> {
     const results = await this.dbFuncs.getMany(
       numStoryItems,
-      lastStoryItem?.user?.alias,
+      firstStoryItem?.user?.alias,
       "sender_handle",
       alias
     );
