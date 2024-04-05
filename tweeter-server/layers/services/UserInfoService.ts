@@ -49,7 +49,7 @@ export class UserInfoService extends Service {
     if (!isValidToken) {
       throw new ServiceError(403, "Insufficient rights");
     }
-    const isFollower = await this.db.followsDAO.isFollower(user.alias, selectedUser.alias);
+    const isFollower = await this.db.followsDAO.isFollower(selectedUser.alias, user.alias);
     return { isFollower };
   }
 
@@ -58,7 +58,8 @@ export class UserInfoService extends Service {
     currentUser: User,
     userToFollow: User
   ): Promise<{ followersCount: number; followeesCount: number }> {
-    await this.db.userDAO.incrementFolloweesCount(userToFollow.alias);
+    await this.db.userDAO.incrementFolloweesCount(currentUser.alias);
+    await this.db.userDAO.incrementFollowersCount(userToFollow.alias);
     await this.db.followsDAO.follow(currentUser.alias, userToFollow.alias);
     const { count: followersCount } = await this.getFollowersCount(authToken, userToFollow);
     const { count: followeesCount } = await this.getFolloweesCount(authToken, userToFollow);
@@ -71,7 +72,8 @@ export class UserInfoService extends Service {
     userToUnfollow: User
   ): Promise<{ followersCount: number; followeesCount: number }> {
     await this.db.followsDAO.unfollow(currentUser.alias, userToUnfollow.alias);
-    await this.db.userDAO.decrementFolloweesCount(userToUnfollow.alias);
+    await this.db.userDAO.decrementFolloweesCount(currentUser.alias);
+    await this.db.userDAO.decrementFollowersCount(userToUnfollow.alias);
     const { count: followersCount } = await this.getFollowersCount(authToken, userToUnfollow);
     const { count: followeesCount } = await this.getFolloweesCount(authToken, userToUnfollow);
     return { followersCount, followeesCount };

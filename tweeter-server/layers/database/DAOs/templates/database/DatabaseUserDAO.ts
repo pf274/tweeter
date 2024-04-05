@@ -94,7 +94,7 @@ export abstract class DatabaseUserDAO implements DatabaseDAO {
 
   async decrementFolloweesCount(alias: string): Promise<void> {
     return this.getFolloweesCount(alias).then((numFollowees) => {
-      this.dbFuncs.update("handle", alias, { numFollowees: numFollowees - 1 });
+      this.dbFuncs.update("handle", alias, { numFollowees: Math.max(0, numFollowees - 1) });
     });
   }
 }

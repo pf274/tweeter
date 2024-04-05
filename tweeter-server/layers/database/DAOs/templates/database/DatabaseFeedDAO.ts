@@ -24,6 +24,7 @@ export abstract class DatabaseFeedDAO implements DatabaseDAO {
   }
 
   async postStatus(receiver_handles: string[], status: Status): Promise<boolean> {
+    if (receiver_handles.length === 0) return true;
     try {
       await this.dbFuncs.saveMany(
         receiver_handles.map((receiver_handle) => ({

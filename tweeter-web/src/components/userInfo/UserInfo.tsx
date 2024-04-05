@@ -9,10 +9,16 @@ interface UserInfoProps {}
 
 const UserInfo = (props: UserInfoProps) => {
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } = useToastListener();
+  const [isFollower, setIsFollower] = useState<boolean>(false);
+  const [followeesCount, setFolloweesCount] = useState<number>(0);
+  const [followersCount, setFollowersCount] = useState<number>(0);
   const listener: UserInfoView = {
     displayErrorMessage,
     displayInfoMessage,
     clearLastInfoMessage,
+    setIsFollowing: (isFollower: boolean) => setIsFollower(isFollower),
+    setFolloweesCount: (count: number) => setFolloweesCount(count),
+    setFollowersCount: (count: number) => setFollowersCount(count),
   };
   const [presenter] = useState<UserInfoPresenter>(new UserInfoPresenter(listener));
 
@@ -72,16 +78,16 @@ const UserInfo = (props: UserInfoProps) => {
               </h2>
               <h3>{displayedUser.alias}</h3>
               <br />
-              {presenter.followeesCount > -1 && presenter.followersCount > -1 && (
+              {followeesCount > -1 && followersCount > -1 && (
                 <div>
-                  Following: {presenter.followeesCount} Followers: {presenter.followersCount}
+                  Following: {followeesCount} Followers: {followersCount}
                 </div>
               )}
             </div>
             <form>
               {displayedUser !== currentUser && (
                 <div className="form-group">
-                  {presenter.isFollower ? (
+                  {isFollower ? (
                     <button
                       id="unFollowButton"
                       className="btn btn-md btn-secondary me-1"

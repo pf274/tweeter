@@ -52,6 +52,7 @@ export class DynamoDBFunctions extends AbstractDatabaseFunctions {
   }
 
   async getManySpecific(entries: TableEntry[]) {
+    if (entries.length === 0) return [];
     try {
       const params: BatchGetCommandInput = {
         RequestItems: {
@@ -204,20 +205,29 @@ export class DynamoDBFunctions extends AbstractDatabaseFunctions {
     }
   }
   async update(attributeName: string, attributeValue: string, data: object): Promise<object> {
+    if (Object.keys(data).length === 0) {
+      console.log("DynamoDB update warning: No data to update");
+      return (await this.get(attributeName, attributeValue)) || {};
+    }
     try {
       const params: UpdateCommandInput = {
         TableName: this.tableName,
         Key: {
           [attributeName]: attributeValue,
         },
-        UpdateExpression: "set #data = :data",
-        ExpressionAttributeNames: {
-          "#data": "data",
-        },
-        ExpressionAttributeValues: {
-          ":data": data,
-        },
+        UpdateExpression: `SET `,
+        ExpressionAttributeNames: {},
+        ExpressionAttributeValues: {},
+        ReturnValues: "ALL_NEW",
       };
+
+      params.UpdateExpression += Object.keys(data)
+        .map((key) => `#${key} = :${key}`)
+        .join(", ");
+      for (const [key, value] of Object.entries(data)) {
+        params.ExpressionAttributeNames![`#${key}`] = key;
+        params.ExpressionAttributeValues![`:${key}`] = value;
+      }
       const command = new UpdateCommand(params);
       const results = await this.client.send(command);
       return results.Attributes as object;
