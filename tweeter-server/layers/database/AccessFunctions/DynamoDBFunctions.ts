@@ -121,6 +121,9 @@ export class DynamoDBFunctions extends AbstractDatabaseFunctions {
       const lastItemReturned = result.LastEvaluatedKey as string | undefined;
       return { items, lastItemReturned };
     } catch (err) {
+      if ((err as Error).message.includes("outside query boundaries")) {
+        return { items: [], lastItemReturned: undefined };
+      }
       console.error(err);
       throw new ServiceError(500, `Error querying dynamodb items: ${(err as Error).message}`);
     }
