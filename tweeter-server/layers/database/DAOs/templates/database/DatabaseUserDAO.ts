@@ -1,7 +1,7 @@
 import { User, UserDTO } from "../../../../../utils/shared-models/domain/User";
 import { AbstractDatabaseFunctions } from "../../../AccessFunctions/AbstractDatabaseFunctions";
 import { DatabaseDAO } from "../DatabaseDAO";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export abstract class DatabaseUserDAO implements DatabaseDAO {
   public dbFuncs: AbstractDatabaseFunctions;

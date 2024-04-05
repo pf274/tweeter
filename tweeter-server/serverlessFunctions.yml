@@ -4,65 +4,205 @@ authentication:
     - http: # login
         path: /auth/login
         method: post
-        cors: true
+        cors:
+          origin: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
+          allowCredentials: true
     - http: # register
         path: /auth/register
         method: post
-        cors: true
+        cors:
+          origin: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
+          allowCredentials: true
     - http: # logout
         path: /auth/logout
         method: post
-        cors: true
+        cors:
+          origin: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
+          allowCredentials: true
 itemload:
   handler: layers/handlers/itemload.handler
   events:
     - http:
         path: /items/followers
         method: get
-        cors: true
+        cors:
+          origin: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
+          allowCredentials: true
     - http:
         path: /items/followees
         method: get
-        cors: true
+        cors:
+          origin: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
+          allowCredentials: true
     - http:
         path: /items/feed
         method: get
-        cors: true
+        cors:
+          origin: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
+          allowCredentials: true
     - http:
         path: /items/stories
         method: get
-        cors: true
+        cors:
+          origin: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
+          allowCredentials: true
 userinfo:
   handler: layers/handlers/userinfo.handler
   events:
     - http:
         path: /user/get
         method: get
-        cors: true
+        cors:
+          origin: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
+          allowCredentials: true
     - http:
         path: /user/followersCount
         method: get
-        cors: true
+        cors:
+          origin: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
+          allowCredentials: true
     - http:
         path: /user/followeesCount
         method: get
-        cors: true
+        cors:
+          origin: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
+          allowCredentials: true
     - http:
         path: /user/isFollower
         method: get
-        cors: true
+        cors:
+          origin: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
+          allowCredentials: true
     - http:
         path: /user/follow
         method: post
-        cors: true
+        cors:
+          origin: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
+          allowCredentials: true
     - http:
         path: /user/unfollow
         method: post
-        cors: true
+        cors:
+          origin: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
+          allowCredentials: true
 status:
   handler: layers/handlers/status.handler
   events:
     - http:
         path: /status
         method: post
-        cors: true
+        cors:
+          origin: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
+          allowCredentials: true
