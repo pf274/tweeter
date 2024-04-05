@@ -13,12 +13,14 @@ export abstract class DatabaseFeedDAO implements DatabaseDAO {
     numFeedItems: number,
     firstFeedItem?: Status
   ): Promise<{ feedItems: Status[]; lastFeedItem: string | undefined }> {
-    const results = await this.dbFuncs.getMany(
-      numFeedItems,
-      firstFeedItem?.user?.alias,
-      "receiver_handle",
-      alias
-    );
+    const firstItem =
+      firstFeedItem?.user?.alias && firstFeedItem.timestamp
+        ? {
+            receiver_handle: firstFeedItem.user.alias,
+            timestamp: firstFeedItem.timestamp.toString(),
+          }
+        : undefined;
+    const results = await this.dbFuncs.getMany(numFeedItems, firstItem, "receiver_handle", alias);
     const feedItems = results.items.map((item: any) => Status.fromDTO(item));
     return { feedItems, lastFeedItem: results.lastItemReturned };
   }

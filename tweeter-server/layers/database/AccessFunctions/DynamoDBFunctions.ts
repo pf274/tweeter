@@ -83,7 +83,7 @@ export class DynamoDBFunctions extends AbstractDatabaseFunctions {
 
   async getMany(
     maxCount: number,
-    firstItem?: string,
+    firstItem?: object,
     attributeName?: string,
     attributeValue?: string,
     indexName?: string
@@ -99,14 +99,14 @@ export class DynamoDBFunctions extends AbstractDatabaseFunctions {
     maxCount: number,
     attributeName: string,
     attributeValue: string,
-    firstItem?: string,
+    firstItem?: object,
     indexName?: string
   ): Promise<{ items: object[]; lastItemReturned: string | undefined }> {
     try {
       const params: QueryCommandInput = {
         TableName: this.tableName,
         Limit: maxCount,
-        ExclusiveStartKey: firstItem ? {} : undefined,
+        ExclusiveStartKey: firstItem ? firstItem : undefined,
         KeyConditionExpression: `${attributeName} = :value`,
         ExpressionAttributeValues: {
           ":value": attributeValue,
@@ -114,11 +114,6 @@ export class DynamoDBFunctions extends AbstractDatabaseFunctions {
       };
       if (indexName) {
         params.IndexName = indexName;
-      }
-      if (firstItem) {
-        params.ExclusiveStartKey = {
-          [attributeName]: firstItem,
-        };
       }
       const command = new QueryCommand(params);
       const result = await this.client.send(command);
@@ -133,18 +128,14 @@ export class DynamoDBFunctions extends AbstractDatabaseFunctions {
 
   async doScan(
     maxCount: number,
-    firstItem?: string
+    firstItem?: object
   ): Promise<{ items: object[]; lastItemReturned: string | undefined }> {
     try {
       const params: ScanCommandInput = {
         TableName: this.tableName,
         Limit: maxCount,
+        ExclusiveStartKey: firstItem ? firstItem : undefined,
       };
-      if (firstItem) {
-        params.ExclusiveStartKey = {
-          [this.tableName]: firstItem,
-        };
-      }
       const command = new ScanCommand(params);
       const result = await this.client.send(command);
       const items = result.Items as object[];

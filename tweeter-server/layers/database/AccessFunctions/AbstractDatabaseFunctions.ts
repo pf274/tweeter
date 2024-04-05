@@ -29,7 +29,7 @@ export abstract class AbstractDatabaseFunctions {
   ): Promise<void>;
   abstract getMany(
     maxCount: number,
-    firstItem?: string,
+    firstItem?: object,
     attributeName?: string,
     attributeValue?: string,
     indexName?: string

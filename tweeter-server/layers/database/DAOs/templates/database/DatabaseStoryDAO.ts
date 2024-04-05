@@ -13,12 +13,14 @@ export abstract class DatabaseStoryDAO implements DatabaseDAO {
     numStoryItems: number,
     firstStoryItem?: Status
   ): Promise<{ storyItems: Status[]; lastStoryItem: string | undefined }> {
-    const results = await this.dbFuncs.getMany(
-      numStoryItems,
-      firstStoryItem?.user?.alias,
-      "sender_handle",
-      alias
-    );
+    const firstItem =
+      firstStoryItem?.user?.alias && firstStoryItem.timestamp
+        ? {
+            sender_handle: firstStoryItem.user.alias,
+            timestamp: firstStoryItem.timestamp.toString(),
+          }
+        : undefined;
+    const results = await this.dbFuncs.getMany(numStoryItems, firstItem, "sender_handle", alias);
     const storyItems = results.items.map((item: any) => Status.fromDTO(item));
     return { storyItems, lastStoryItem: results.lastItemReturned };
   }

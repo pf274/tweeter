@@ -8,9 +8,12 @@ export abstract class DatabaseFollowsDAO implements DatabaseDAO {
   }
 
   async getFollowers(alias: string, numFollowers: number, firstAlias?: string) {
+    const firstItem = firstAlias
+      ? { followee_handle: alias, follower_handle: firstAlias }
+      : undefined;
     const { items, lastItemReturned } = await this.dbFuncs.getMany(
       numFollowers,
-      firstAlias,
+      firstItem,
       "followee_handle",
       alias,
       "follows_index"
@@ -20,9 +23,12 @@ export abstract class DatabaseFollowsDAO implements DatabaseDAO {
   }
 
   async getFollowees(alias: string, numFollowees: number, firstAlias?: string) {
+    const firstItem = firstAlias
+      ? { follower_handle: alias, followee_handle: firstAlias }
+      : undefined;
     const { items, lastItemReturned } = await this.dbFuncs.getMany(
       numFollowees,
-      firstAlias,
+      firstItem,
       "follower_handle",
       alias
     );
