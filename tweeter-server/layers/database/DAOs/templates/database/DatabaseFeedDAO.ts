@@ -12,7 +12,7 @@ export abstract class DatabaseFeedDAO implements DatabaseDAO {
     alias: string,
     numFeedItems: number,
     firstFeedItem?: Status
-  ): Promise<{ feedItems: Status[]; lastFeedItem: string | undefined }> {
+  ): Promise<{ feedItems: Status[]; lastFeedItem: object | undefined }> {
     const firstItem =
       firstFeedItem?.user?.alias && firstFeedItem.timestamp
         ? {

@@ -33,7 +33,7 @@ export abstract class AbstractDatabaseFunctions {
     attributeName?: string,
     attributeValue?: string,
     indexName?: string
-  ): Promise<{ items: object[]; lastItemReturned: string | undefined }>;
+  ): Promise<{ items: object[]; lastItemReturned: object | undefined }>;
   abstract getManySpecific(data: TableEntry[]): Promise<object[]>;
   abstract saveMany(data: SaveEntry[]): Promise<void>;
   abstract deleteMany(data: TableEntry[]): Promise<void>;

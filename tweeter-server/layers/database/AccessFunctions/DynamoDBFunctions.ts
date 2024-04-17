@@ -87,7 +87,7 @@ export class DynamoDBFunctions extends AbstractDatabaseFunctions {
     attributeName?: string,
     attributeValue?: string,
     indexName?: string
-  ): Promise<{ items: object[]; lastItemReturned: string | undefined }> {
+  ): Promise<{ items: object[]; lastItemReturned: object | undefined }> {
     if (attributeName && attributeValue) {
       return this.doQuery(maxCount, attributeName, attributeValue, firstItem, indexName);
     } else {
@@ -101,7 +101,7 @@ export class DynamoDBFunctions extends AbstractDatabaseFunctions {
     attributeValue: string,
     firstItem?: object,
     indexName?: string
-  ): Promise<{ items: object[]; lastItemReturned: string | undefined }> {
+  ): Promise<{ items: object[]; lastItemReturned: object | undefined }> {
     try {
       const params: QueryCommandInput = {
         TableName: this.tableName,
@@ -118,7 +118,7 @@ export class DynamoDBFunctions extends AbstractDatabaseFunctions {
       const command = new QueryCommand(params);
       const result = await this.client.send(command);
       const items = result.Items as object[];
-      const lastItemReturned = result.LastEvaluatedKey as string | undefined;
+      const lastItemReturned = result.LastEvaluatedKey as object | undefined;
       return { items, lastItemReturned };
     } catch (err) {
       if ((err as Error).message.includes("outside query boundaries")) {
@@ -132,7 +132,7 @@ export class DynamoDBFunctions extends AbstractDatabaseFunctions {
   async doScan(
     maxCount: number,
     firstItem?: object
-  ): Promise<{ items: object[]; lastItemReturned: string | undefined }> {
+  ): Promise<{ items: object[]; lastItemReturned: object | undefined }> {
     try {
       const params: ScanCommandInput = {
         TableName: this.tableName,
@@ -142,7 +142,7 @@ export class DynamoDBFunctions extends AbstractDatabaseFunctions {
       const command = new ScanCommand(params);
       const result = await this.client.send(command);
       const items = result.Items as object[];
-      const lastItemReturned = result.LastEvaluatedKey as string | undefined;
+      const lastItemReturned = result.LastEvaluatedKey as object | undefined;
       return { items, lastItemReturned };
     } catch (err) {
       console.error(err);

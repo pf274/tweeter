@@ -18,7 +18,7 @@ export abstract class DatabaseFollowsDAO implements DatabaseDAO {
       alias,
       "follows_index"
     );
-    const followerHandles = items.map((item: any) => item.follower_handle);
+    const followerHandles: string[] = items.map((item: any) => item.follower_handle);
     return { usersAliases: followerHandles, lastAlias: lastItemReturned };
   }
 

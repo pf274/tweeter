@@ -12,7 +12,7 @@ export abstract class DatabaseStoryDAO implements DatabaseDAO {
     alias: string,
     numStoryItems: number,
     firstStoryItem?: Status
-  ): Promise<{ storyItems: Status[]; lastStoryItem: string | undefined }> {
+  ): Promise<{ storyItems: Status[]; lastStoryItem: object | undefined }> {
     const firstItem =
       firstStoryItem?.user?.alias && firstStoryItem.timestamp
         ? {

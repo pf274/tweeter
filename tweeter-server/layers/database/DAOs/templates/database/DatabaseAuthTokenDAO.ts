@@ -37,9 +37,15 @@ export abstract class DatabaseAuthTokenDAO implements DatabaseDAO {
       const allAuthTokens: object[] = [];
       let lastItem = undefined;
       do {
-        const { items, lastItemReturned } = await this.dbFuncs.getMany(100, lastItem);
+        const {
+          items,
+          lastItemReturned,
+        }: { items: object[]; lastItemReturned: object | undefined } = await this.dbFuncs.getMany(
+          100,
+          lastItem
+        );
         allAuthTokens.push(...items);
-        lastItem = lastItemReturned ? { authToken: lastItemReturned } : undefined;
+        lastItem = lastItemReturned;
       } while (lastItem);
       const expiredTokens: any = allAuthTokens.filter((entry) => {
         const authTokenDTO: AuthTokenDTO = entry as AuthTokenDTO;
